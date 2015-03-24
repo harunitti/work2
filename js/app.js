@@ -5,7 +5,7 @@
  */
 (function(global) {
 
-    "use strict";
+    'use strict';
     
     var Map = global.Map || (global.Map = {});
     

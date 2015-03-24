@@ -394,7 +394,19 @@
          * @return {Void}
          */ 
         save: function () {
-            var csv = '';
+            if (!this.markers.length) {
+                alert('保存するデータがありません。');
+                return;
+            }
+            var iframe = document.createElement('iframe');
+            iframe.frameBorder = '0';
+            document.body.appendChild(iframe);
+
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', 'csv_download.php');
+            iframe.appendChild(form);
+
             for (var i = 0; i < this.markers.length; i++) {
                 var marker = this.markers[i];
                 var position = marker.getPosition();
@@ -403,12 +415,17 @@
                 data.push(position.lat());
                 data.push(position.lng());
                 data.push(marker.info);
-                var line = data.join(',');
-                line += '\r\n';
-                csv += line;
+                form.appendChild(this.createHidden('data[]', data));
             }
-            console.log(csv);
-            $('#csv').val(csv);
+
+            form.submit();
+        },
+        createHidden: function (name, value) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'hidden');
+            input.setAttribute('name', name);
+            input.setAttribute('value', value);
+            return input;
         },
         /**
          * モバイル判定

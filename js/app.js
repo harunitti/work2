@@ -274,6 +274,18 @@
                 // 緯度経度変更を更新
                 self.updateCSV();
             });
+            // オーバー
+            google.maps.event.addListener(marker, 'mouseover', function (e) {
+                if (marker.infoWindow) {
+                    self.eachMarkers(function(marker, i, target) {
+                        if (marker === target) {
+                            marker.infoWindow.setZIndex(self.markers.length);
+                        } else {
+                            marker.infoWindow.setZIndex(0);
+                        }
+                    }, marker);
+                }
+            });
             // マウスダウン
             google.maps.event.addListener(marker, 'mousedown', function (e) {
                 self.isDown = true;

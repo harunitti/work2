@@ -114,7 +114,6 @@
             this.map = new google.maps.Map(this.mapDiv, options);
             // マップダブルクリック地点にマーカー作成
             google.maps.event.addListener(self.map, 'dblclick', function (e) {
-                console.log('map dbclick');
                 var latLng = e.latLng;
                 var cnt = self.markers.length + 1;
                 var title = 'マーカー' + cnt;
@@ -263,7 +262,6 @@
             });
             // マウスダウン
             google.maps.event.addListener(marker, 'mousedown', function (e) {
-                console.log('marker mousedown');
                 self.isDown = true;
                 window.setTimeout(function () {
                     if (!self.isDown) {
@@ -302,7 +300,6 @@
             var marker = this.$modal.data('marker');
             if (marker && window.confirm('削除しますか？')) {
                 var idx = this.searchMarkers(marker);
-                console.log('delete', idx);
                 if (idx !== -1) {
                     marker.setMap(null);
                     this.markers.splice(idx, 1);
@@ -479,12 +476,9 @@
                     marker.setMap(null);
                 }
             });
-            console.log("delete1", this.markers, this.markers.length);
             this.markers = [];
-            console.log("delete15", this.markers, this.markers.length);
             var csv = this.$csv.val();
             var datas = csv.split('\n');
-            console.log("datas.length", datas.length);
             for (var i=0;i < datas.length; i++) {
                 var data = [];
                 if (datas[i] != '') {
@@ -493,7 +487,6 @@
                     var lat     = data[1];
                     var lng     = data[2];
                     var info    = data[3];
-                    console.log(title, lat, lng, info);
                     var latLng = new google.maps.LatLng(lat, lng);// 緯度 経度
                     var marker = this.setMaker(title, latLng);
                     if (info) {
@@ -501,7 +494,6 @@
                     }
                 }
             }
-            console.log("delete2", this.markers, this.markers.length);
         },
         /**
          * input hidden作成

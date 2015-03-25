@@ -256,12 +256,12 @@
          * マーカー設定
          * @param {String} title
          * @param {google.maps.LatLng} latLng
-         * @param {String} icon
          * @param {String} info
+         * @param {String} icon
          * @param {String} image
          * @return {Void}
          */ 
-        setMaker: function (title, latLng, icon, info, image) {
+        setMaker: function (title, latLng, info, icon, image) {
             var self = this;
             // マーカー追加
             var marker = this.createMarker(this.map, title, latLng, icon, info);
@@ -505,10 +505,7 @@
                     var lng     = data[2];
                     var info    = data[3];
                     var latLng = new google.maps.LatLng(lat, lng);// 緯度 経度
-                    var marker = this.setMaker(title, latLng);
-                    if (info) {
-                        marker.info = info;
-                    }
+                    var marker = this.setMaker(title, latLng, info);
                 }
             }
         },

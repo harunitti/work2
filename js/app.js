@@ -172,6 +172,7 @@
             var deleteBtn = document.getElementById('deleteBtn');
             google.maps.event.addDomListener(deleteBtn, 'mousedown', function (e) {
                 self.deleteMarker();
+                self.updateCSV();
             });
             // 現在地
             var currentBtn = document.getElementById('currentBtn');

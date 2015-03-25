@@ -386,13 +386,13 @@
             if (marker.info) {
                 content += '<br>' + marker.info;// TODO:HTMLの構造決める
             }
-            var infowindow = new google.maps.InfoWindow({
+            var infoWindow = new google.maps.InfoWindow({
                 content: content,
                 position: marker.position,
                 pixelOffset: new google.maps.Size(0, -25)
             });
-            infowindow.open(this.map);
-            marker.infowindow = infowindow;
+            infoWindow.open(this.map);
+            marker.infoWindow = infoWindow;
         },
         /**
          * 情報ウインドウ削除
@@ -400,9 +400,9 @@
          * @return {Void}
          */ 
         removeInfoWindow: function (marker) {
-            if (marker.infowindow) {
-                marker.infowindow.close();
-                marker.infowindow = null;
+            if (marker.infoWindow) {
+                marker.infoWindow.close();
+                marker.infoWindow = null;
             }
         },
         /**

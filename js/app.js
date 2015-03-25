@@ -422,6 +422,12 @@
 
             form.submit();
         },
+        /**
+         * input hidden作成
+         * @param {String} name
+         * @param {String} value
+         * @return {Object} input
+         */
         createHidden: function (name, value) {
             var input = document.createElement('input');
             input.setAttribute('type', 'hidden');

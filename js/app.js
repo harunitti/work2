@@ -382,10 +382,13 @@
          */ 
         createInfoWindow: function (marker) {
             this.removeInfoWindow(marker);
-            var content = marker.title;
-            if (marker.info) {
-                content += '<br>' + marker.info;// TODO:HTMLの構造決める
-            }
+            var content = '';
+            content += '<div class="infoWin">';
+            content += '<div><strong>';
+            content += marker.title;
+            content += '</strong></div>';
+            content += marker.info;
+            content += '</div>';
             var infoWindow = new google.maps.InfoWindow({
                 content: content,
                 position: marker.position,

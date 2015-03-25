@@ -446,6 +446,7 @@
                 alert('保存するデータがありません。');
                 return;
             }
+            var self = this;
             var iframe = document.createElement('iframe');
             iframe.frameBorder = '0';
             document.body.appendChild(iframe);
@@ -455,16 +456,15 @@
             form.setAttribute('action', 'csv_download.php');
             iframe.appendChild(form);
 
-            for (var i = 0; i < this.markers.length; i++) {
-                var marker = this.markers[i];
+            this.eachMarkers(function (marker) {
                 var position = marker.getPosition();
                 var data = [];
                 data.push(marker.getTitle());
                 data.push(position.lat());
                 data.push(position.lng());
                 data.push(marker.info);
-                form.appendChild(this.createHidden('data[]', data));
-            }
+                form.appendChild(self.createHidden('data[]', data));
+            });
 
             form.submit();
         },

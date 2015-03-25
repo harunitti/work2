@@ -194,6 +194,14 @@
             google.maps.event.addDomListener(restoreBtn, 'mousedown', function (e) {
                 self.restore();
             });
+            // 全選択
+            this.$csv.mousedown(function() {
+                console.log("focus");
+                if (!self.$csv.is(":focus")) {
+                    self.$csv.select().focus();
+                    return false;
+                }
+            });
         },
         /**
          * マップオブション取得

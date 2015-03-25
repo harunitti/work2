@@ -71,7 +71,7 @@
          * 情報ウインドウ表示
          * @type {Boolean}
          */ 
-        isOpenInfoWindow: false,
+        isInfoWindowOpen: false,
         /**
          * マウスダウン遅延
          * @type {Number}
@@ -359,19 +359,19 @@
                 alert('マーカーがありません。マップをダブルクリックして作成してください。');
                 return;
             }
-            if (!this.isOpenInfoWindow) {
+            if (!this.isInfoWindowOpen) {
                 // 情報ウインドウ作成
                 this.eachMarkers(function (marker) {
                     self.createInfoWindow(marker);
                 });
-                this.isOpenInfoWindow = true;
+                this.isInfoWindowOpen = true;
                 openInfoWindowBtn.innerHTML = '情報ウインドウ非表示';
             } else {
                 // 情報ウインドウ削除
                 this.eachMarkers(function (marker) {
                     self.removeInfoWindow(marker);
                 });
-                this.isOpenInfoWindow = false;
+                this.isInfoWindowOpen = false;
                 openInfoWindowBtn.innerHTML = '情報ウインドウ表示';
             }
         },

@@ -179,9 +179,9 @@
             google.maps.event.addDomListener(currentBtn, 'mousedown', function (e) {
                 self.current(function (center) {
                     self.map.setCenter(center);
-                    //var icon = 'https://dl-web.dropbox.com/get/kojo/pin56.svg?_subject_uid=359804683&w=AABTAEQiFSzqvi7RfIq7-iHSDe9XVw3zpGzqfI3riY9Qow';
-                    //self.createMarker(self.map, center, '現在地', icon);
-                    self.setMaker(center, '現在地');
+                    var cnt = self.markers.length + 1;
+                    var title = '現在地' + cnt;
+                    self.setMaker(title, center);
                 });
             });
             // 保存

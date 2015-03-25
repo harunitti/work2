@@ -88,6 +88,8 @@
                 style.width = this.MOBILE_WIDTH;
                 style.height = this.MOBILE_HEIGHT;
                 this.mouseDownDelay = 1500;
+                var saveBtn = document.getElementById('saveBtn');
+                saveBtn.style.display = 'none';
             }
             // map作成
             this.addMap();

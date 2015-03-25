@@ -63,6 +63,11 @@
          */ 
         $modal: $('#pointInfoModal'),
         /**
+         * CSVテキストエリア
+         * @type {Object}
+         */ 
+        $csv: $("#csv"),
+        /**
          * 情報ウインドウ表示
          * @type {Boolean}
          */ 
@@ -103,16 +108,18 @@
         addMap: function () {
             var self = this;
             // 初期中心地点
-            var latlng = new google.maps.LatLng(this.lat, this.lng);// 緯度 経度
+            var latLng = new google.maps.LatLng(this.lat, this.lng);// 緯度 経度
             // マップ作成
-            var options = this.getMapOptions(latlng);
+            var options = this.getMapOptions(latLng);
             this.map = new google.maps.Map(this.mapDiv, options);
             // マップダブルクリック地点にマーカー作成
             google.maps.event.addListener(self.map, 'dblclick', function (e) {
                 console.log('map dbclick');
                 var latLng = e.latLng;
                 var cnt = self.markers.length + 1;
-                self.setMaker(latLng, 'マーカー' + cnt);
+                var title = 'マーカー' + cnt;
+                self.setMaker(title, latLng);
+                self.updateCSV();
             });
         },
         /**
@@ -160,6 +167,7 @@
             var updateBtn = document.getElementById('updateBtn');
             google.maps.event.addDomListener(updateBtn, 'mousedown', function (e) {
                 self.updateMarker();
+                self.updateCSV();
             });
             // マーカー削除
             var deleteBtn = document.getElementById('deleteBtn');
@@ -169,7 +177,7 @@
             // 現在地
             var currentBtn = document.getElementById('currentBtn');
             google.maps.event.addDomListener(currentBtn, 'mousedown', function (e) {
-                self.current(function(center) {
+                self.current(function (center) {
                     self.map.setCenter(center);
                     //var icon = 'https://dl-web.dropbox.com/get/kojo/pin56.svg?_subject_uid=359804683&w=AABTAEQiFSzqvi7RfIq7-iHSDe9XVw3zpGzqfI3riY9Qow';
                     //self.createMarker(self.map, center, '現在地', icon);
@@ -181,12 +189,17 @@
             google.maps.event.addDomListener(saveBtn, 'mousedown', function (e) {
                 self.save();
             });
+            // 復元
+            var restoreBtn = document.getElementById('restoreBtn');
+            google.maps.event.addDomListener(restoreBtn, 'mousedown', function (e) {
+                self.restore();
+            });
         },
         /**
          * マップオブション取得
          * @param {google.maps.LatLng} latLng
          * @return {Object} options
-         */ 
+         */
         getMapOptions: function (latLng) {
             return {
                 zoom: this.zoom,
@@ -202,34 +215,48 @@
         /**
          * マーカー作成
          * @param {google.maps.Map} map
-         * @param {google.maps.LatLng} latLng
          * @param {String} title
+         * @param {google.maps.LatLng} latLng
          * @param {String} icon
+         * @param {String} info
+         * @param {String} image
          * @return {google.maps.Marker} marker
          */ 
-        createMarker: function (map, latLng, title, icon) {
+        createMarker: function (map, title, latLng, icon, info, image) {
             var options = {
-                position: latLng,
                 map: map,
-                draggable: true,
                 title: title,
+                position: latLng,
+                icon: '',
+                info: '',
+                image: '',
+                draggable: true,
                 animation: google.maps.Animation.DROP
             };
             if (icon) {
                 options.icon = {url: icon};
             }
+            if (info) {
+                options.info = info;
+            }
+            if (image) {
+                options.image = image;
+            }
             return new google.maps.Marker(options);
         },
         /**
          * マーカー設定
-         * @param {google.maps.LatLng} latLng
          * @param {String} title
+         * @param {google.maps.LatLng} latLng
+         * @param {String} icon
+         * @param {String} info
+         * @param {String} image
          * @return {Void}
          */ 
-        setMaker: function (latLng, title) {
+        setMaker: function (title, latLng, icon, info, image) {
             var self = this;
             // マーカー追加
-            var marker = this.createMarker(this.map, latLng, title);
+            var marker = this.createMarker(this.map, title, latLng, icon, info);
             // ドラッグ
             google.maps.event.addListener(marker, 'dragstart', function (e) {
                 self.isDown = false;
@@ -394,7 +421,24 @@
         /**
          * 保存
          * @return {Void}
-         */ 
+         */
+        updateCSV: function () {
+            var csv = '';
+            this.eachMarkers(function (marker) {
+                var position = marker.getPosition();
+                var data = [];
+                data.push(marker.getTitle());
+                data.push(position.lat());
+                data.push(position.lng());
+                data.push(marker.info);
+                csv += data.join(',') + '\n';
+            });
+            this.$csv.val(csv);
+        },
+        /**
+         * 保存
+         * @return {Void}
+         */
         save: function () {
             if (!this.markers.length) {
                 alert('保存するデータがありません。');
@@ -421,6 +465,39 @@
             }
 
             form.submit();
+        },
+        /**
+         * 復元
+         * @return {Void}
+         */
+        restore: function () {
+            // 削除
+            this.eachMarkers(function (marker) {
+                marker.setMap(null);
+            });
+            console.log("delete1", this.markers, this.markers.length);
+            this.markers = [];
+            console.log("delete15", this.markers, this.markers.length);
+            var csv = this.$csv.val();
+            var datas = csv.split('\n');
+            console.log("datas.length", datas.length);
+            for (var i=0;i < datas.length; i++) {
+                var data = [];
+                if (datas[i] != '') {
+                    data = datas[i].split(',');
+                    var title   = data[0];
+                    var lat     = data[1];
+                    var lng     = data[2];
+                    var info    = data[3];
+                    console.log(title, lat, lng, info);
+                    var latLng = new google.maps.LatLng(lat, lng);// 緯度 経度
+                    var marker = this.setMaker(title, latLng);
+                    if (info) {
+                        marker.info = info;
+                    }
+                }
+            }
+            console.log("delete2", this.markers, this.markers.length);
         },
         /**
          * input hidden作成

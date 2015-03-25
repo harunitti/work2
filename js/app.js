@@ -256,9 +256,14 @@
             var self = this;
             // マーカー追加
             var marker = this.createMarker(this.map, title, latLng, icon, info);
-            // ドラッグ
+            // ドラッグ前
             google.maps.event.addListener(marker, 'dragstart', function (e) {
                 self.isDown = false;
+            });
+            // ドラッグ後
+            google.maps.event.addListener(marker, 'dragend', function (e) {
+                // 緯度経度変更を更新
+                self.updateCSV();
             });
             // マウスダウン
             google.maps.event.addListener(marker, 'mousedown', function (e) {

@@ -471,9 +471,13 @@
          * @return {Void}
          */
         restore: function () {
+            var self = this;
             // 削除
             this.eachMarkers(function (marker) {
-                marker.setMap(null);
+                if (marker) {
+                    self.removeInfoWindow(marker);
+                    marker.setMap(null);
+                }
             });
             console.log("delete1", this.markers, this.markers.length);
             this.markers = [];

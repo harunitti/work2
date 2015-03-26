@@ -78,6 +78,11 @@
          */ 
         mouseDownDelay: 400,
         /**
+         * 画像ディレクトリ
+         * @type {String}
+         */ 
+        imageDir: 'images',
+        /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
@@ -344,6 +349,12 @@
             this.$modal.find('#lat').val(marker.position.lat());
             this.$modal.find('#lng').val(marker.position.lng());
             this.$modal.find('#info').val(marker.info);
+            this.$modal.find('#image').val(marker.image);
+            if (marker.image) {
+                this.$modal.find('#imageView').prop('src', this.imageDir + '/' + marker.image).show();
+            } else {
+                this.$modal.find('#imageView').hide();
+            }
             this.$modal.data('marker', marker);
         },
         /**
@@ -359,6 +370,7 @@
             var latlng = new google.maps.LatLng(lat, lng);// 緯度 経度
             marker.setPosition(latlng);
             marker.info = this.$modal.find('#info').val();
+            marker.image = this.$modal.find('#image').val();
         },
         /**
          * 情報ウインドウ表示管理
@@ -400,6 +412,9 @@
             content += marker.title;
             content += '</strong></div>';
             content += marker.info;
+            if (marker.image) {
+                content += '<img width="180" src="' + this.imageDir + '/' + marker.image + '">';
+            }
             content += '</div>';
             var infoWindow = new google.maps.InfoWindow({
                 content: content,
@@ -408,6 +423,7 @@
             });
             infoWindow.open(this.map);
             marker.infoWindow = infoWindow;
+            
         },
         /**
          * 情報ウインドウ削除
@@ -516,8 +532,9 @@
                     var lat     = data[1];
                     var lng     = data[2];
                     var info    = data[3];
+                    var image   = data[4];
                     var latLng = new google.maps.LatLng(lat, lng);// 緯度 経度
-                    var marker = this.setMaker(title, latLng, info);
+                    var marker = this.setMaker(title, latLng, info, null, image);
                 }
             }
         },

@@ -283,6 +283,9 @@
             google.maps.event.addListener(marker, 'mouseover', function (e) {
                 if (marker.infoWindow) {
                     self.eachMarkers(function(marker, i, target) {
+                        if (!marker.infoWindow) {
+                            return;
+                        }
                         if (marker === target) {
                             marker.infoWindow.setZIndex(self.markers.length);
                         } else {

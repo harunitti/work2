@@ -236,15 +236,18 @@
                 dataType: "json",
                 url: "get_image_list.php",
                 success: function (data) {
-                    var i, filename;
+                    var i, filename, options = '';
                     for (i = 0; i < data.photo.length; i++) {
                         filename = data.photo[i];
-                        self.$photoSelect.append($('<option>').val(filename).text(filename));
+                        options += $('<option>').val(filename).text(filename)[0].outerHTML;
                     }
+                    self.$photoSelect.append(options);
+                    options = '';
                     for (i = 0; i < data.pin.length; i++) {
                         filename = data.pin[i];
-                        self.$pinSelect.append($('<option>').val(filename).text(filename));
+                        options += $('<option>').val(filename).text(filename)[0].outerHTML;
                     }
+                    self.$pinSelect.append(options);
                 }
             });
         },

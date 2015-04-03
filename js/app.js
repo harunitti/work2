@@ -78,10 +78,25 @@
          */ 
         mouseDownDelay: 400,
         /**
-         * 画像ディレクトリ
+         * 写真ディレクトリ
          * @type {String}
          */ 
-        imageDir: 'images',
+        photoDir: '/images/photo/',
+        /**
+         * アイコン画像ディレクトリ
+         * @type {String}
+         */ 
+        pinDir: '/images/icon/',
+        /**
+         * 写真セレクト
+         * @type {Object}
+         */ 
+        $photoSelect: $("#photo"),
+        /**
+         * アイコンセレクト
+         * @type {Object}
+         */ 
+        $pinSelect: $("#pin"),
         /**
          * 初期処理
          * @param {Object} options
@@ -105,6 +120,8 @@
             this.addMap();
             // domイベント
             this.addDomEvents();
+            // 画像一覧取得
+            this.getImageList();
         },
         /**
          * マップ作成
@@ -209,6 +226,29 @@
             });
         },
         /**
+         * 画像取得
+         * @return void
+         */
+        getImageList: function () {
+            var self = this;
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "get_image_list.php",
+                success: function (data) {
+                    var i, filename;
+                    for (i = 0; i < data.photo.length; i++) {
+                        filename = data.photo[i];
+                        self.$photoSelect.append($('<option>').val(filename).text(filename));
+                    }
+                    for (i = 0; i < data.pin.length; i++) {
+                        filename = data.pin[i];
+                        self.$pinSelect.append($('<option>').val(filename).text(filename));
+                    }
+                }
+            });
+        },
+        /**
          * マップオブション取得
          * @param {google.maps.LatLng} latLng
          * @return {Object} options
@@ -230,30 +270,30 @@
          * @param {google.maps.Map} map
          * @param {String} title
          * @param {google.maps.LatLng} latLng
-         * @param {String} icon
          * @param {String} info
-         * @param {String} image
+         * @param {String} pin
+         * @param {String} photo
          * @return {google.maps.Marker} marker
          */ 
-        createMarker: function (map, title, latLng, icon, info, image) {
+        createMarker: function (map, title, latLng, info, pin, photo) {
             var options = {
                 map: map,
                 title: title,
                 position: latLng,
-                icon: '',
+                pin: '',
                 info: '',
-                image: '',
+                photo: '',
                 draggable: true,
                 animation: google.maps.Animation.DROP
             };
-            if (icon) {
-                options.icon = {url: icon};
-            }
             if (info) {
                 options.info = info;
             }
-            if (image) {
-                options.image = image;
+            if (pin) {
+                options.icon = {url: this.pinDir + pin};
+            }
+            if (photo) {
+                options.photo = photo;
             }
             return new google.maps.Marker(options);
         },
@@ -262,14 +302,14 @@
          * @param {String} title
          * @param {google.maps.LatLng} latLng
          * @param {String} info
-         * @param {String} icon
-         * @param {String} image
+         * @param {String} pin
+         * @param {String} photo
          * @return {Void}
          */ 
-        setMaker: function (title, latLng, info, icon, image) {
+        setMaker: function (title, latLng, info, pin, photo) {
             var self = this;
             // マーカー追加
-            var marker = this.createMarker(this.map, title, latLng, icon, info);
+            var marker = this.createMarker(this.map, title, latLng, info, pin, photo);
             // ドラッグ前
             google.maps.event.addListener(marker, 'dragstart', function (e) {
                 self.isDown = false;
@@ -352,12 +392,8 @@
             this.$modal.find('#lat').val(marker.position.lat());
             this.$modal.find('#lng').val(marker.position.lng());
             this.$modal.find('#info').val(marker.info);
-            this.$modal.find('#image').val(marker.image);
-            if (marker.image) {
-                this.$modal.find('#imageView').prop('src', this.imageDir + '/' + marker.image).show();
-            } else {
-                this.$modal.find('#imageView').hide();
-            }
+            this.$modal.find('#photo').val(marker.photo);
+            this.$modal.find('#pin').val(marker.pin);
             this.$modal.data('marker', marker);
         },
         /**
@@ -373,7 +409,14 @@
             var latlng = new google.maps.LatLng(lat, lng);// 緯度 経度
             marker.setPosition(latlng);
             marker.info = this.$modal.find('#info').val();
-            marker.image = this.$modal.find('#image').val();
+            marker.photo = this.$modal.find('#photo').val();
+            this.createInfoWindow(marker);
+            marker.pin = this.$modal.find('#pin').val();
+            var iconUrl = null;
+            if (marker.pin) {
+                iconUrl =  this.pinDir + marker.pin;
+            }
+            marker.setIcon(iconUrl);
         },
         /**
          * 情報ウインドウ表示管理
@@ -414,9 +457,11 @@
             content += '<div><strong>';
             content += marker.title;
             content += '</strong></div>';
+            content += '<div>';
             content += marker.info;
-            if (marker.image) {
-                content += '<img width="180" src="' + this.imageDir + '/' + marker.image + '">';
+            content += '</div>';
+            if (marker.photo) {
+                content += '<img style="clear:both;" width="180" src="' + this.photoDir + '/' + marker.photo + '">';
             }
             content += '</div>';
             var infoWindow = new google.maps.InfoWindow({
@@ -476,6 +521,8 @@
                 data.push(position.lat());
                 data.push(position.lng());
                 data.push(marker.info);
+                data.push(marker.pin);
+                data.push(marker.photo);
                 csv += data.join(',') + '\n';
             });
             this.$csv.val(csv);
@@ -506,6 +553,8 @@
                 data.push(position.lat());
                 data.push(position.lng());
                 data.push(marker.info);
+                data.push(marker.pin);
+                data.push(marker.photo);
                 form.appendChild(self.createHidden('data[]', data));
             });
 
@@ -535,9 +584,10 @@
                     var lat     = data[1];
                     var lng     = data[2];
                     var info    = data[3];
-                    var image   = data[4];
+                    var pin     = data[4];
+                    var photo   = data[5];
                     var latLng = new google.maps.LatLng(lat, lng);// 緯度 経度
-                    var marker = this.setMaker(title, latLng, info, null, image);
+                    var marker = this.setMaker(title, latLng, info, pin, photo);
                 }
             }
         },

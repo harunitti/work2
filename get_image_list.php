@@ -10,6 +10,8 @@ class GetImageList
     {
         $photoList = $this->getPathList("./images/photo");
         $iconList = $this->getPathList("./images/icon");
+        sort($photoList);
+        sort($iconList);
         $result = ["photo" => $photoList, "pin" => $iconList];
         echo json_encode($result);
     }

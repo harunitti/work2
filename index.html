@@ -52,22 +52,29 @@
             <label for="title">タイトル</label>
             <input type="text" id="title" class="form-control">
         </div>
-        <div class="form-group">
-            <label for="lat">緯度</label>
-            <input type="text" id="lat" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="lng">経度</label>
-            <input type="text" id="lng" class="form-control">
+        <div class="form-group row">
+            <div class="col-xs-6">
+                <label for="lat">緯度</label>
+                <input type="text" id="lat" class="form-control">
+            </div>
+            <div class="col-xs-6">
+                <label for="lng">経度</label>
+                <input type="text" id="lng" class="form-control">
+            </div>
         </div>
         <div class="form-group">
             <label for="info">説明文</label>
             <textarea id="info" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label for="image">画像</label>
-            <input type="text" id="image" class="form-control">
-            <img src="" width="180" id="imageView">
+            <label for="photo">画像</label>
+            <select id="photo" class="form-control">
+                <option value="">なし</option>
+            </select>
+            <label for="pin">アイコン</label>
+            <select id="pin" class="form-control">
+                <option value="">デフォルト</option>
+            </select>
         </div>
         <div class="form-group">
             <button id="cancelBtn" class="btn btn-default">キャンセル</button>

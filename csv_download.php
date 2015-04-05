@@ -35,5 +35,6 @@ if (is_array($_POST["data"])) {
         $list[] = explode(",", $data);
     }
     $csv = new CSV;
-    $csv->download($list, [], "kojo_map.csv");
+    $filename = date('Ymd_His')."_kojo_map.csv";
+    $csv->download($list, [], $filename);
 }

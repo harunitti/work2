@@ -1,11 +1,11 @@
 # 高岡古城公園マップ作成ツール
 
+![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast.gif)
+
 #URL
   http://kojo.niiyz.com/
 
 #操作
-
-![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast.gif)
 
 ## 1. 新規マーカー追加
  地図上でダブルクリックした位置にマーカーを作成します。

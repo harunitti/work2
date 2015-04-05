@@ -294,6 +294,7 @@
             }
             if (pin) {
                 options.icon = {url: this.pinDir + pin};
+                options.pin = pin;
             }
             if (photo) {
                 options.photo = photo;

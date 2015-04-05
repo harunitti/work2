@@ -5,6 +5,8 @@
 
 #操作
 
+![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast.gif)
+
 ## 1. 新規マーカー追加
  地図上でダブルクリックした位置にマーカーを作成します。
 

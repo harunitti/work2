@@ -16,27 +16,27 @@
          * 緯度
          * @type {Number}
          */ 
-        lat: 0,
+        lat: Map.Config.LAT,
         /**
          * 経度
          * @type {Number}
          */ 
-        lng: 0,
+        lng: Map.Config.LNG,
         /**
          * ズーム
          * @type {Number}
          */ 
-        zoom: 17,
+        zoom: Map.Config.ZOOM,
         /**
          * モバイル幅
          * @type {String}
          */ 
-        MOBILE_WIDTH: '100%',
+        mobileWidth:  Map.Config.MOBILE_WIDTH,
         /**
          * モバイル高さ
          * @type {String}
          */ 
-        MOBILE_HEIGHT: '420px',
+        mobileHeight: Map.Config.MOBILE_HEIGHT,
         /**
          * マウスダウン判定
          * @type {Boolean}
@@ -76,22 +76,22 @@
          * マウスダウン遅延
          * @type {Number}
          */ 
-        mouseDownDelay: 400,
+        mouseDownDelay: Map.Config.MOUSE_DOWN_DELAY_PC,
        /**
          * 画像ディレクトリ
          * @type {String}
          */ 
-        imageDir: '/images/',
+        imageDir: Map.Config.IMAGE_DIR,
         /**
          * 写真ディレクトリ
          * @type {String}
          */ 
-        photoDir: '/images/photo/',
+        photoDir: Map.Config.PHOTO_DIR,
         /**
          * アイコン画像ディレクトリ
          * @type {String}
          */ 
-        pinDir: '/images/icon/',
+        pinDir: Map.Config.ICON_DIR,
         /**
          * 写真セレクト
          * @type {Object}
@@ -107,18 +107,15 @@
          * @param {Object} options
          * @return {Void}
          */ 
-        initialize: function (options) {
-            this.lat = options.lat;
-            this.lng = options.lng;
-            this.zoom = options.zoom;
+        initialize: function () {
             this.mapDiv = document.getElementById('canvas');
             // モバイル判定
             var isMobile = this.isMobile();
             if (isMobile) {
                 var style = this.mapDiv.style;
-                style.width = this.MOBILE_WIDTH;
-                style.height = this.MOBILE_HEIGHT;
-                this.mouseDownDelay = 1500;
+                style.width = this.mobileWidth;
+                style.height = this.mobileHeight;
+                this.mouseDownDelay = Map.Config.MOUSE_DOWN_DELAY_MOBILE;
                 var saveBtn = document.getElementById('saveBtn');
                 saveBtn.style.display = 'none';
             } else {

@@ -73,17 +73,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+<script src="js/config.js" charset="UTF-8"></script>
 <script src="js/app.js" charset="UTF-8"></script>
 <script>
 window.onload = function () {
-    // 古城公園
-    var kojo = {
-        lat: 36.748920,
-        lng: 137.021867,
-        zoom: 17
-    };
     var tool = new Map.Tool();
-    tool.initialize(kojo);
+    tool.initialize();
 };
 </script>
 </body>

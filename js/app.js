@@ -150,12 +150,20 @@
             // マップダブルクリック地点にマーカー作成
             google.maps.event.addListener(self.map, 'dblclick', function (e) {
                 var latLng = e.latLng;
-                var cnt = self.markers.length + 1;
-                var title = 'マーカー' + cnt;
-                self.setMaker(title, latLng);
-                self.updateCSV();
+                self.addMarker(latLng);
             });
         },
+        /**
+         * マーカー作成
+         * @param {google.maps.LatLng} latLng
+         * @return {Void}
+         */ 
+        addMarker: function (latLng) {
+            var cnt = this.markers.length + 1;
+            var title = 'マーカー' + cnt;
+            this.setMaker(title, latLng);
+            this.updateCSV();
+        }, 
         /**
          * マーカー処理
          * @param {Function} func
@@ -212,14 +220,10 @@
             // 現在地に打つ
             var currentBtn = document.getElementById('currentBtn');
             google.maps.event.addDomListener(currentBtn, 'mousedown', function (e) {
-                /*
-                self.current(function (center) {
-                    self.map.setCenter(center);
-                    var cnt = self.markers.length + 1;
-                    var title = '現在地' + cnt;
-                    self.setMaker(title, center);
-                });
-                */
+                if (self.currentMarker) {
+                    var latLng = self.currentMarker.getPosition();
+                    self.addMarker(latLng);
+                }
             });
             // 保存
             var saveBtn = document.getElementById('saveBtn');

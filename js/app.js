@@ -529,7 +529,9 @@
                     function (info) {
                         alert('現在地取得エラー' + info.code);
                         return;
-                    });
+                    },
+                    {enableHighAccuracy: true, timeout: 6000, maximumAge: 600000}
+                );
             } else {
                 alert('本ブラウザではGeolocationが使えません');
                 return;

@@ -1,6 +1,6 @@
 # 高岡古城公園マップ作成ツール
 
-![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast.gif)
+![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 
 #URL
   http://kojo.niiyz.com/
@@ -77,9 +77,20 @@
   
   前回のCSVを保存しておいてコピーして再開できます。
 
-## 7. 地図情報CSVダウンロード
+## 7. 地図情報CSVダウンロード(PCのみ)
 　6のCSVテキストエリアにあるものをファイルとしてダウンロードします。
-  
-  ※「CSVダウンロード」ボタンはPCのみ表示しています。
 
+
+## 8.現在地表示(スマホのみ)
+　現在地を青いアイコンで表示します。
+
+「現在地に打つ」ボタンを押すと現在地にマーカーを打ちます。
+　
+
+
+マーカーはPCと同じでタッチすると編集モダールが表示されて情報を編集できます。
+
+
+
+![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast2.gif)
 

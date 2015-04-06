@@ -77,6 +77,11 @@
          * @type {Number}
          */ 
         mouseDownDelay: 400,
+       /**
+         * 画像ディレクトリ
+         * @type {String}
+         */ 
+        imageDir: '/images/',
         /**
          * 写真ディレクトリ
          * @type {String}
@@ -122,6 +127,8 @@
             this.addDomEvents();
             // 画像一覧取得
             this.getImageList();
+            // 現在地追跡
+            this.watchCurrent();
         },
         /**
          * マップ作成
@@ -196,15 +203,17 @@
                 self.deleteMarker();
                 self.updateCSV();
             });
-            // 現在地
+            // 現在地に打つ
             var currentBtn = document.getElementById('currentBtn');
             google.maps.event.addDomListener(currentBtn, 'mousedown', function (e) {
+                /*
                 self.current(function (center) {
                     self.map.setCenter(center);
                     var cnt = self.markers.length + 1;
                     var title = '現在地' + cnt;
                     self.setMaker(title, center);
                 });
+                */
             });
             // 保存
             var saveBtn = document.getElementById('saveBtn');
@@ -489,14 +498,28 @@
             }
         },
         /**
-         * 現在地
-         * @param {Function}
+         * 現在地追跡
          * @return {Void}
          */ 
-        current: function (func) {
+        watchCurrent: function () {
+            var self = this;
+            this.watchCurrentPosition(function(center) {
+                if (!self.currentMarker) {
+                    self.setCurrentMarker(center);
+                } else {
+                    self.currentMarker.setPosition(center);
+                }
+            });
+        },
+        /**
+         * 現在地追跡
+         * @param {Function} func
+         * @return {Void}
+         */ 
+        watchCurrentPosition: function (func) {
             var self = this;
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
+                navigator.geolocation.watchPosition(
                     function (info) {
                         var lat = info.coords.latitude;
                         var lng = info.coords.longitude;
@@ -511,6 +534,30 @@
                 alert('本ブラウザではGeolocationが使えません');
                 return;
             }
+        },
+        /**
+         * 現在地表示
+         * @param {google.maps.LatLng} latLng
+         * @return {Void}
+         */ 
+        setCurrentMarker: function(latLng) {
+            // define our custom marker image
+            var image = new google.maps.MarkerImage(
+                this.imageDir + 'bluedot.png',
+                null, // size
+                null, // origin
+                new google.maps.Point(8, 8), // anchor (move to center of marker)
+                new google.maps.Size(17, 17) // scaled size (required for Retina display icon)
+            );
+            var options = {
+                map: this.map,
+                position: latLng,
+                icon: image,
+                optimized: false,
+                title: '現在地',
+                visible: true
+            };
+            this.currentMarker = new google.maps.Marker(options);
         },
         /**
          * 保存

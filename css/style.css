@@ -31,6 +31,11 @@ div#canvas {
     min-height: 50px;
 }
 
+.infoWin img {
+    clear:both;
+    width: 180px;
+}
+
 /*
 Copyright (c) 2012 Steve Stedman
 Released under the MIT license

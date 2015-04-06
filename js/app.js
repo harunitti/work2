@@ -481,7 +481,7 @@
             content += marker.info;
             content += '</div>';
             if (marker.photo) {
-                content += '<img style="clear:both;" width="180" src="' + this.photoDir + '/' + marker.photo + '">';
+                content += '<img src="' + this.photoDir + '/' + marker.photo + '">';
             }
             content += '</div>';
             var infoWindow = new google.maps.InfoWindow({

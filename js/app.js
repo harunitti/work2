@@ -113,13 +113,17 @@
             this.zoom = options.zoom;
             this.mapDiv = document.getElementById('canvas');
             // モバイル判定
-            if (this.isMobile()) {
+            var isMobile = this.isMobile();
+            if (isMobile) {
                 var style = this.mapDiv.style;
                 style.width = this.MOBILE_WIDTH;
                 style.height = this.MOBILE_HEIGHT;
                 this.mouseDownDelay = 1500;
                 var saveBtn = document.getElementById('saveBtn');
                 saveBtn.style.display = 'none';
+            } else {
+                var currentBtn = document.getElementById('currentBtn');
+                currentBtn.style.display = 'none';
             }
             // map作成
             this.addMap();
@@ -128,7 +132,9 @@
             // 画像一覧取得
             this.getImageList();
             // 現在地追跡
-            this.watchCurrent();
+            if (isMobile) {
+                this.watchCurrent();
+            }
         },
         /**
          * マップ作成

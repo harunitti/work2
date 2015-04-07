@@ -2,17 +2,16 @@
 
 class CSV
 {    
-    public function __construct()
-    {
-    }
-
+    
+    protected $csv = '';
+    protected $filename = '';
+    
     /**
-     * CSVダウンロード
+     * CSV
      * @param array $list
      * @param array $header
-     * @param string $filename
-     */
-    public function download($list, $header, $filename)
+     */    
+    public function __construct($list, $header=[])
     {
         if (count($header) > 0) {
             array_unshift($list, $header);
@@ -22,11 +21,19 @@ class CSV
             fputcsv($stream, $row);
         }
         rewind($stream);
-        $csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
-        $csv = mb_convert_encoding($csv, 'SJIS-win', 'UTF-8');
+        $this->csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
+        $this->csv = mb_convert_encoding($this->csv, 'SJIS-win', 'UTF-8');
+        $this->filename = date('Ymd_His') . "_kojo_map.csv";
+    }
+
+    /**
+     * ダウンロード
+     */
+    public function download()
+    {
         header('Content-Type: text/csv');
-        header("Content-Disposition: attachment; filename=$filename");
-        echo $csv;
+        header("Content-Disposition: attachment; filename={$this->filename}");
+        echo $this->csv;
     }
 }
 if (is_array($_POST["data"])) {
@@ -34,7 +41,6 @@ if (is_array($_POST["data"])) {
     foreach ($_POST["data"] as $data) {
         $list[] = explode(",", $data);
     }
-    $csv = new CSV;
-    $filename = date('Ymd_His')."_kojo_map.csv";
-    $csv->download($list, [], $filename);
+    $csv = new CSV($list);
+    $csv->download();
 }

@@ -110,8 +110,8 @@
         initialize: function () {
             this.mapDiv = document.getElementById('canvas');
             // モバイル判定
-            var isMobile = this.isMobile();
-            if (isMobile) {
+            var mobile = this.isMobile();
+            if (mobile) {
                 var style = this.mapDiv.style;
                 style.width = this.mobileWidth;
                 style.height = this.mobileHeight;
@@ -129,7 +129,7 @@
             // 画像一覧取得
             this.getImageList();
             // 現在地追跡
-            if (isMobile) {
+            if (mobile) {
                 this.watchCurrent();
             }
         },

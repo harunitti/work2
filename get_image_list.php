@@ -9,7 +9,7 @@ class GetImageList
     public function load()
     {
         $photoList = $this->getPathList("./images/photo");
-        $iconList = $this->getPathList("./images/icon");
+        $iconList = $this->getPathList("./images/icon", true);
         sort($photoList);
         sort($iconList);
         $result = ["photo" => $photoList, "pin" => $iconList];
@@ -19,9 +19,10 @@ class GetImageList
     /**
      * getPathList
      * @param string $dir
+     * @param bool $getSize
      * @return array $list
      */
-    protected function getPathList($dir)
+    protected function getPathList($dir, $getSize=false)
     {
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator(
@@ -34,7 +35,22 @@ class GetImageList
         $list = [];
         foreach ($iterator as $pathName => $info) {
             if ($info->isFile()) {
-                $list[] = $info->getFilename();
+                $file = [];
+                $file['name'] = $info->getFilename();
+                if ($getSize) {
+                    if (pathinfo($file['name'], PATHINFO_EXTENSION) == "svg") {
+                        $xml = simplexml_load_file($pathName);
+                        $width = (string) $xml->attributes()->width;
+                        $height = (string) $xml->attributes()->height;
+                        $file['width'] = substr($width, 0, -2);
+                        $file['height'] = substr($height ,0, -2);
+                    } else {
+                        list($width, $height) = getimagesize($pathName);
+                        $file['width'] = $width;
+                        $file['height'] = $height;
+                    }
+                }
+                $list[] = $file;
             }
         }
         return $list;

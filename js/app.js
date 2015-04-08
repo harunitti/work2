@@ -254,14 +254,17 @@
                 success: function (data) {
                     var i, filename, options = '';
                     for (i = 0; i < data.photo.length; i++) {
-                        filename = data.photo[i];
-                        options += $('<option>').val(filename).text(filename)[0].outerHTML;
+                        filename = data.photo[i].name;
+                        options += '<option val="' + filename + '">' + filename + '</option>';
                     }
                     self.$photoSelect.append(options);
                     options = '';
+                    var w, h;
                     for (i = 0; i < data.pin.length; i++) {
-                        filename = data.pin[i];
-                        options += $('<option>').val(filename).text(filename)[0].outerHTML;
+                        filename = data.pin[i].name;
+                        w = data.pin[i].width;
+                        h = data.pin[i].height;
+                        options += '<option val="' + filename + '" data-width="' + w +  '" data-height="' + h + '">' + filename + '</option>';
                     }
                     self.$pinSelect.append(options);
                 }

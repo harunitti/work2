@@ -343,6 +343,9 @@
             google.maps.event.addListener(marker, 'dragend', function (e) {
                 // 緯度経度変更を更新
                 self.updateCSV();
+                if (marker.infoWindow) {
+                    self.createInfoWindow(marker);
+                }
             });
             // オーバー
             google.maps.event.addListener(marker, 'mouseover', function (e) {

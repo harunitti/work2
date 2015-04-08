@@ -306,13 +306,15 @@
                 info: '',
                 photo: '',
                 draggable: true,
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
+                iconOffset: -25// デフォルトピン用
             };
             if (info) {
                 options.info = info;
             }
             if (pin) {
-                options.icon = {url: this.pinDir + pin};
+                var path = this.pinDir + pin;
+                options.icon = {url: path};
                 options.pin = pin;
             }
             if (photo) {
@@ -433,13 +435,17 @@
             marker.setPosition(latlng);
             marker.info = this.$modal.find('#info').val();
             marker.photo = this.$modal.find('#photo').val();
-            this.createInfoWindow(marker);
             marker.pin = this.$modal.find('#pin').val();
+            var iconHeight = this.$modal.find('#pin option:selected').data('height');
             var iconUrl = null;
             if (marker.pin) {
                 iconUrl =  this.pinDir + marker.pin;
+                marker.iconOffset = - (iconHeight);
+            } else {
+                marker.iconOffset = -25;
             }
             marker.setIcon(iconUrl);
+            this.createInfoWindow(marker);
         },
         /**
          * 情報ウインドウ表示管理
@@ -490,11 +496,10 @@
             var infoWindow = new google.maps.InfoWindow({
                 content: content,
                 position: marker.position,
-                pixelOffset: new google.maps.Size(0, -25)
+                pixelOffset: new google.maps.Size(0, marker.iconOffset)
             });
             infoWindow.open(this.map);
             marker.infoWindow = infoWindow;
-            
         },
         /**
          * 情報ウインドウ削除

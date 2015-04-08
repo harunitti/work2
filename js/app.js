@@ -255,7 +255,7 @@
                     var i, filename, options = '';
                     for (i = 0; i < data.photo.length; i++) {
                         filename = data.photo[i].name;
-                        options += '<option val="' + filename + '">' + filename + '</option>';
+                        options += '<option value="' + filename + '">' + filename + '</option>';
                     }
                     self.$photoSelect.append(options);
                     options = '';
@@ -264,7 +264,7 @@
                         filename = data.pin[i].name;
                         w = data.pin[i].width;
                         h = data.pin[i].height;
-                        options += '<option val="' + filename + '" data-width="' + w +  '" data-height="' + h + '">' + filename + '</option>';
+                        options += '<option value="' + filename + '" data-width="' + w +  '" data-height="' + h + '">' + filename + '</option>';
                     }
                     self.$pinSelect.append(options);
                 }

@@ -307,7 +307,7 @@
                 photo: '',
                 draggable: true,
                 animation: google.maps.Animation.DROP,
-                iconOffset: Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
+                iconOffsetHeight: Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
             };
             if (info) {
                 options.info = info;

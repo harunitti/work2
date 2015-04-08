@@ -307,7 +307,7 @@
                 photo: '',
                 draggable: true,
                 animation: google.maps.Animation.DROP,
-                iconOffset: -25// デフォルトピン用
+                iconOffset: Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
             };
             if (info) {
                 options.info = info;
@@ -440,9 +440,9 @@
             var iconUrl = null;
             if (marker.pin) {
                 iconUrl =  this.pinDir + marker.pin;
-                marker.iconOffset = - (iconHeight);
+                marker.iconOffsetHeight = - (iconHeight);
             } else {
-                marker.iconOffset = -25;
+                marker.iconOffsetHeight = Map.Config.DEFAULT_ICON_OFFSET_HEIGHT;
             }
             marker.setIcon(iconUrl);
             this.createInfoWindow(marker);
@@ -496,7 +496,7 @@
             var infoWindow = new google.maps.InfoWindow({
                 content: content,
                 position: marker.position,
-                pixelOffset: new google.maps.Size(0, marker.iconOffset)
+                pixelOffset: new google.maps.Size(0, marker.iconOffsetHeight)
             });
             infoWindow.open(this.map);
             marker.infoWindow = infoWindow;

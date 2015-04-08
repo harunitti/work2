@@ -65,7 +65,12 @@
          * 写真ディレクトリ
          * @type {String}
          */
-        PHOTO_DIR: IMAGE_DIR + 'photo/'
+        PHOTO_DIR: IMAGE_DIR + 'photo/',
+        /**
+         * 標準マーカーの情報ウインドウオフセット位置pixel
+         * @type {Number}
+         */
+        DEFAULT_ICON_OFFSET_HEIGHT: -25
     }
 })(this);
 

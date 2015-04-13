@@ -28,16 +28,6 @@
          */ 
         zoom: Map.Config.ZOOM,
         /**
-         * モバイル幅
-         * @type {String}
-         */ 
-        mobileWidth:  Map.Config.MOBILE_WIDTH,
-        /**
-         * モバイル高さ
-         * @type {String}
-         */ 
-        mobileHeight: Map.Config.MOBILE_HEIGHT,
-        /**
          * マウスダウン判定
          * @type {Boolean}
          */ 
@@ -113,8 +103,8 @@
             var mobile = this.isMobile();
             if (mobile) {
                 var style = this.mapDiv.style;
-                style.width = this.mobileWidth;
-                style.height = this.mobileHeight;
+                style.width = Map.Config.MOBILE_WIDTH;
+                style.height = Map.Config.MOBILE_HEIGHT;
                 this.mouseDownDelay = Map.Config.MOUSE_DOWN_DELAY_MOBILE;
                 var saveBtn = document.getElementById('saveBtn');
                 saveBtn.style.display = 'none';

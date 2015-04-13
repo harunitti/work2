@@ -393,6 +393,7 @@
             if (marker && window.confirm('削除しますか？')) {
                 var idx = this.searchMarkers(marker);
                 if (idx !== -1) {
+                    this.removeInfoWindow(marker);
                     marker.setMap(null);
                     this.markers.splice(idx, 1);
                 }

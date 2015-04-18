@@ -23,6 +23,9 @@
   高岡古城公園マップ作成ツール
 　http://kojo.niiyz.com/
 
+#設定
+  古城公園以外で使用する場合は、js/Config.jsのConfig.LAT, Config.LNGを変更してください。
+
 #操作
 
 ## 1. 新規マーカー追加

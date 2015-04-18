@@ -23,8 +23,8 @@
   高岡古城公園マップ作成ツール
 　http://kojo.niiyz.com/
 
-#設定
-  古城公園以外で使用する場合は、js/Config.jsのConfig.LAT, Config.LNGを変更してください。
+#設定ファイル
+  古城公園以外で使用する場合は、js/Config.jsのConfig.LAT, Config.LNGを変更してマップの初期位置を変えてください。
 
 #操作
 

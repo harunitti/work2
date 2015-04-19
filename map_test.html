@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="ja">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>古城公園マップ</title>
+    <meta name="description" content="高岡古城公園のマップです。">
+    <meta property="og:title" content="古城公園マップ" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://kojo.niiyz.com/map.html" />
+    <meta property="og:description" content="高岡古城公園のマップです。" />
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="canvas"></div>
+<div id="menu"></div>
+<select id="list" class="hide"></select>
+<script type="text/javascript" src="lib/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+<script type="text/javascript" src="js/config.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/map.js" charset="UTF-8"></script>
+<script>
+window.onload = function () {
+    var app = new Map.App();
+    app.initialize();
+};
+</script>
+</body>
+</html>

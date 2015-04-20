@@ -115,7 +115,7 @@
             this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
-            this.$pointSelect.css('width', '300px');// TEST
+            this.$pointSelect.css('max-width', '300px');// TEST
             this.$pointSelect.attr('id', 'list');
             this.$pointSelect.on('change', function () {
                 var marker = $('#list option:selected').data('marker');

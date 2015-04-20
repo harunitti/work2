@@ -24,7 +24,7 @@
 　http://kojo.niiyz.com/
 
 #設定ファイル
-  古城公園以外で使用する場合は、js/Config.jsのConfig.LAT, Config.LNGを変更してマップの初期位置を変えてください。
+  古城公園以外で使用する場合は、js/tool_config.jsのConfig.LAT, Config.LNGを変更してマップの初期位置を変えてください。
 
 #操作
 
@@ -85,6 +85,61 @@
 マーカーはPCと同じでタッチすると編集モダールが表示されて情報を編集できます。
 
 
-
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast2.gif)
 
+# マップ本体 準備1 CSV設置
+
+マップ作成ツールでCSVファイルを作成したらcsvディレクトリを作成して配下に設置します。
+
+~~~
+% mkdir csv
+~~~
+
+CSVを設置する。
+
+~~~
+% ls csv
+shizen_kojyo_map.csv    rekishi_kojyo_map.csv
+~~~
+
+# マップ本体 準備2 make_map_data.php編集
+
+make_map_data.phpの下部でカテゴリ名と設置したCSVを設定します。
+
+~~~
+$data = new MakeMapData;
+$data->addCategory("歴史", "rekishi_kojyo_map.csv");
+$data->addCategory("自然", "shizen_kojyo_map.csv");
+$data->make();
+~~~
+
+# マップ本体 準備3 make_map_data.php実行
+
+make_map_data.phpを実行すると同階層にmap_data.jsonが作成されます。
+
+~~~
+% php make_map_data.php
+~~~
+
+
+# マップ本体 準備4 
+
+map_data.jsonをpublic/data/map_data.jsonとして設置します。
+
+map.jsからはpublic/data/map_data.jsonを読み込んでマップを表示します。
+
+# マップ本体　表示
+
+js/map_config.jsで初期位置(緯度経度)の設定をしてください。
+
+map.html
+~~~
+<script type="text/javascript" src="js/map_config.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/map.js" charset="UTF-8"></script>
+<script>
+window.onload = function () {
+    var app = new Map.App();
+    app.initialize();
+};
+</script>
+~~~

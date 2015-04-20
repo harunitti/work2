@@ -75,7 +75,7 @@
 　6のCSVテキストエリアにあるものをファイルとしてダウンロードします。
 
 
-## 8.現在地表示(スマホのみ)
+## 8. 現在地表示(スマホのみ)
 　現在地を青いアイコンで表示します。
 
 「現在地に打つ」ボタンを押すと現在地にマーカーを打ちます。
@@ -104,7 +104,8 @@ shizen_kojyo_map.csv    rekishi_kojyo_map.csv
 
 # マップ本体 準備2 make_map_data.php編集
 
-make_map_data.phpの下部でカテゴリ名と設置したCSVを設定します。
+make_map_data.phpはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
+make_map_data.phpの下部でカテゴリ名と対応するCSVを記述してください。
 
 ~~~
 $data = new MakeMapData;
@@ -119,18 +120,41 @@ make_map_data.phpを実行すると同階層にmap_data.jsonが作成されま�
 
 ~~~
 % php make_map_data.php
+% ls
+map_data.json
 ~~~
 
 
-# マップ本体 準備4 
+# マップ本体 準備4 マップデータ配置
 
 map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
-map.jsからはpublic/data/map_data.jsonを読み込んでマップを表示します。
+~~~
+% mkdir public/data
+% mv map_data.json public/data/map_data.json 
+~~~
+
+# マップ本体 準備5 初期位置(緯度経度)設定
+
+js/map_config.jsで初期位置(緯度経度)の設定をしてください。
+
+~~~
+    Map.Config = {
+        /**
+         * 緯度
+         * @type {Number}
+         */ 
+        LAT: 36.748920,
+        /**
+         * 経度
+         * @type {Number}
+         */ 
+        LNG: 137.021867,
+~~~
 
 # マップ本体　表示
 
-js/map_config.jsで初期位置(緯度経度)の設定をしてください。
+js/map.js内からdata/map_data.jsonを読み込んでマップを表示します。
 
 map.html
 ~~~

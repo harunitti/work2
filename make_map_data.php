@@ -4,7 +4,9 @@ class GetMapData
 {
     protected $data = [];
     
-    const DATA_DIR = '../data/';
+    const CSV_DATA_DIR = 'csv/';
+    
+    const SAVE_DATA_PATH = 'map_data.json';
     
     public function __construct()
     {
@@ -12,7 +14,7 @@ class GetMapData
 
     public function addCategory($name, $filename)
     {
-        $file = new SplFileObject(self::DATA_DIR.$filename);
+        $file = new SplFileObject(self::CSV_DATA_DIR.$filename);
         if ($file == false) {
             return;
         }
@@ -41,13 +43,15 @@ class GetMapData
         }
     }
 
-    public function load()
+    public function make()
     {
-        echo json_encode($this->data);
+        $fp = fopen(self::SAVE_DATA_PATH, "w");
+        fwrite($fp, json_encode($this->data));
+        fclose($fp);
     }
 }
 
 $data = new GetMapData;
 $data->addCategory("歴史", "rekishi_kojyo_map.csv");
 $data->addCategory("自然", "shizen_kojyo_map.csv");
-$data->load();
+$data->make();

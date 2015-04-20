@@ -166,6 +166,17 @@
             return -1;
         },
         /**
+         * 全マーカー削除
+         * @return {Void}
+         */
+        removeAllMarker: function () {
+            var self = this;
+            this.eachMarkers(function(marker) {
+                self.removeInfoWindow(marker);
+                marker.setMap(null);
+            });
+        },
+        /**
          * @param {google.maps.Marker} marker
          * @return void
          */
@@ -219,6 +230,24 @@
             // タイトル
             self.$titleBtn = $("<button>").addClass("btn btn-inverse category");
             self.$naviBtnGroup.append(self.$titleBtn);
+            
+            for (var i = 0;i < data.length; i ++) {
+                var categoryName = data[i].name;
+                var $label = $('<label>').addClass('radio');
+                var $radio = $('<input type="radio" data-toggle="radio" name="category" data-radiocheck-toggle="radio">').val(i).attr('id', categoryName + i);
+                if (i == 0) {
+                    $radio.attr('checked', 'checked');
+                }
+                $label.text(categoryName).attr('for', categoryName + i).prepend($radio);
+                $('#categoryList').append($label);
+            }
+            $('[name="category"]').on('change', function () {
+                var no = $('input[name="category"]:checked').val();
+                self.removeAllMarker();
+                self.removeAllInfoWindow();
+                self.setMapData(data[no].name, data[no].data);
+                self.$cannelModal.modal('hide');
+            });
             self.setMapData(data[0].name, data[0].data);
             // カテゴリ
             var $cannelBtn = $('<button>').addClass('btn btn-success').text('カテゴリ');
@@ -310,7 +339,7 @@
                 options.pin = pin;
                 options.iconOffsetHeight = - pin.size.height;
             } else {
-                options.iconOffsetHeight = Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
+                options.iconOffsetHeight = Map.Config.DEFAULT_ICON_OFFSET_HEIGHT;// デフォルトピン用
             }
             if (photo) {
                 options.photo = photo;

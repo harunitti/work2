@@ -4,7 +4,10 @@ class CSV
 {    
     
     protected $csv = '';
+    
     protected $filename = '';
+    
+    const FILENAME_SUFFIX = '_kojo_map';
     
     /**
      * CSV
@@ -23,7 +26,7 @@ class CSV
         rewind($stream);
         $this->csv = str_replace(PHP_EOL, "\r\n", stream_get_contents($stream));
         $this->csv = mb_convert_encoding($this->csv, 'SJIS-win', 'UTF-8');
-        $this->filename = date('Ymd_His') . "_kojo_map.csv";
+        $this->filename = date('Ymd_His') . self::FILENAME_SUFFIX . '.csv';
     }
 
     /**

@@ -6,6 +6,9 @@ class GetMapData
     
     const CSV_DATA_DIR = 'csv/';
     
+    const ICON_DIR = 'public/images/icon/';
+    const PHOTO_DIR = 'public/images/photo/';
+    
     const SAVE_DATA_PATH = 'map_data.json';
     
     public function __construct()
@@ -30,26 +33,26 @@ class GetMapData
             $d["lng"]   = $this->h($row[2], false);
             $d["info"]  = $this->h($row[3], true);
             $pin = $this->h($row[4], false);
-            $d["pin"]   = ["name" => $pin, "size" => $this->getImageSize($pin)];
+            $d["pin"]   = ["name" => $pin, "size" => $this->getImageSize(self::ICON_DIR.$pin)];
             $photo = $this->h($row[5], false);
-            $d["photo"] = ["name" => $photo, "size" => $this->getImageSize($photo)];
+            $d["photo"] = ["name" => $photo, "size" => $this->getImageSize(self::PHOTO_DIR.$photo)];
             $category[] = $d;
         }
         $this->data[] = ["name"=>$name, "data"=>$category];
     }
 
-    protected function getImageSize($filename) {
-        if (!file_exists($filename)) {
+    protected function getImageSize($path) {
+        if (!file_exists($path) || is_dir($path)) {
             return ["width"=> 0, "height"=> 0];
         }
-        if (pathinfo($filename, PATHINFO_EXTENSION) == "svg") {
-            $xml = simplexml_load_file($filename);
+        if (pathinfo($path, PATHINFO_EXTENSION) == "svg") {
+            $xml = simplexml_load_file($path);
             $width = (string)$xml->attributes()->width;
             $height = (string)$xml->attributes()->height;
             $width = substr($width, 0, -2);
             $height = substr($height, 0, -2);
         } else {
-            list($width, $height) = getimagesize($filename);
+            list($width, $height) = getimagesize($path);
         }
         return ["width"=> $width, "height"=> $height];
     }

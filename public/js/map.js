@@ -192,7 +192,7 @@
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "get_map_data.php",
+                url: "/data/map_data.json",
                 success: function (data) {
                     self.setNavigation(data)
                 }
@@ -241,12 +241,12 @@
             this.$titleBtn.text(category);
             this.$pointSelect.html('').append($('<option>').text('メニュー'));
             for (var i = 0; i < data.length; i++) {
-                var title   = data[i][0];
-                var lat     = data[i][1];
-                var lng     = data[i][2];
-                var info    = data[i][3];
-                var pin     = data[i][4];
-                var photo   = data[i][5];
+                var title   = data[i]['title'];
+                var lat     = data[i]['lat'];
+                var lng     = data[i]['lng'];
+                var info    = data[i]['info'];
+                var pin     = data[i]['pin'];
+                var photo   = data[i]['photo'];
                 var latLng  = new google.maps.LatLng(lat, lng);
                 var marker  = this.setMaker(category, title, latLng, info, pin, photo);
                 var $option = $("<option>").text(title).data('marker', marker);
@@ -282,8 +282,8 @@
          * @param {String} title
          * @param {google.maps.LatLng} latLng
          * @param {String} info
-         * @param {String} pin
-         * @param {String} photo
+         * @param {Object} pin
+         * @param {Object} photo
          * @return {google.maps.Marker} marker
          */ 
         createMarker: function (map, category, title, latLng, info, pin, photo) {
@@ -302,8 +302,8 @@
             if (info) {
                 options.info = info;
             }
-            if (pin) {
-                var path = this.pinDir + pin;
+            if (pin.name) {
+                var path = this.pinDir + pin.name;
                 options.icon = {url: path};
                 options.pin = pin;
             }
@@ -318,8 +318,8 @@
          * @param {String} title
          * @param {google.maps.LatLng} latLng
          * @param {String} info
-         * @param {String} pin
-         * @param {String} photo
+         * @param {Object} pin
+         * @param {Object} photo
          * @return {google.maps.Marker} marker
          */ 
         setMaker: function (category, title, latLng, info, pin, photo) {
@@ -372,8 +372,8 @@
         createInfoWindow: function (marker) {
             var self = this;
             this.removeInfoWindow(marker);
-            if (marker.photo) {
-                var path = this.photoDir + '/' + marker.photo;
+            if (marker.photo.name) {
+                var path = this.photoDir + '/' + marker.photo.name;
                 var img = new Image();
                 img.src = path;
                 img.onload = function () {
@@ -398,7 +398,7 @@
             content += '<div>';
             content += marker.info;
             content += '</div>';
-            if (marker.photo) {
+            if (marker.photo.name) {
                 content += '<img src="' + path + '">';
             }
             content += '</div>';

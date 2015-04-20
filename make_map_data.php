@@ -19,19 +19,42 @@ class GetMapData
             return;
         }
         $file->setFlags(SplFileObject::READ_CSV);
-        $csv = [];
+        $category = [];
         foreach ($file as $row) {
-            $this->h($row[0]);
-            $this->h($row[1]);
-            $this->h($row[2]);
-            $this->h($row[3], true);
-            $this->h($row[4]);
-            $csv[] = $row;
+            if (!isset($row[0])) {
+                continue;
+            }
+            $d = [];
+            $d["title"] = $this->h($row[0], false);
+            $d["lat"]   = $this->h($row[1], false);
+            $d["lng"]   = $this->h($row[2], false);
+            $d["info"]  = $this->h($row[3], true);
+            $pin = $this->h($row[4], false);
+            $d["pin"]   = ["name" => $pin, "size" => $this->getImageSize($pin)];
+            $photo = $this->h($row[5], false);
+            $d["photo"] = ["name" => $photo, "size" => $this->getImageSize($photo)];
+            $category[] = $d;
         }
-        $this->data[] = ["name"=>$name, "data"=>$csv];
+        $this->data[] = ["name"=>$name, "data"=>$category];
+    }
+
+    protected function getImageSize($filename) {
+        if (!file_exists($filename)) {
+            return ["width"=> 0, "height"=> 0];
+        }
+        if (pathinfo($filename, PATHINFO_EXTENSION) == "svg") {
+            $xml = simplexml_load_file($filename);
+            $width = (string)$xml->attributes()->width;
+            $height = (string)$xml->attributes()->height;
+            $width = substr($width, 0, -2);
+            $height = substr($height, 0, -2);
+        } else {
+            list($width, $height) = getimagesize($filename);
+        }
+        return ["width"=> $width, "height"=> $height];
     }
     
-    protected function h(&$str, $allowBR=false) {
+    protected function h($str, $allowBR=false) {
         if ($allowBR) {
             $str = str_replace("<br>", "+*+br+*+", $str);
         }
@@ -41,6 +64,7 @@ class GetMapData
         if ($allowBR) {
             $str = str_replace("+*+br+*+", "<br>", $str);
         }
+        return $str;
     }
 
     public function make()

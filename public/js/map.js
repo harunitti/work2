@@ -197,8 +197,6 @@
                     self.setNavigation(data)
                 }
             });
-            // TODO: 画像のサイズ取得して吹き出しの表示位置に指定する。
-            // TODO: 現状、利長くんアイコンの頭が隠れている。
         },
 
         /**
@@ -215,7 +213,7 @@
             // タイトル
             self.$titleBtn = $("<button>").addClass("btn btn-inverse category");
             self.$navi.append(self.$titleBtn);
-            self.setMapData(data[1].name, data[1].data);
+            self.setMapData(data[0].name, data[0].data);
             // カテゴリ
             var $cannelBtn = $('<button>').addClass('btn btn-success').text('カテゴリ');
             $cannelBtn.on('mousedown', function () {
@@ -237,7 +235,6 @@
          * @return {Void}
          */
         setMapData: function (category, data) {
-            console.log(data);
             this.$titleBtn.text(category);
             this.$pointSelect.html('').append($('<option>').text('メニュー'));
             for (var i = 0; i < data.length; i++) {
@@ -296,8 +293,7 @@
                 info: '',
                 photo: '',
                 draggable: false,
-                animation: google.maps.Animation.DROP,
-                iconOffsetHeight: Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
+                animation: google.maps.Animation.DROP
             };
             if (info) {
                 options.info = info;
@@ -306,6 +302,9 @@
                 var path = this.pinDir + pin.name;
                 options.icon = {url: path};
                 options.pin = pin;
+                options.iconOffsetHeight = - pin.size.height;
+            } else {
+                options.iconOffsetHeight = Map.Config.DEFAULT_ICON_OFFSET_HEIGHT// デフォルトピン用
             }
             if (photo) {
                 options.photo = photo;

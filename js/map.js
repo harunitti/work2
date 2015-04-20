@@ -89,21 +89,14 @@
          */
         initialize: function () {
             this.mapDiv = document.getElementById('canvas');
-            // モバイル判定
-            var mobile = this.isMobile();
-            //if (mobile) {
-            var style = this.mapDiv.style;
-            style.width = Map.Config.MAP_MOBILE_WIDTH;
-            style.height = Map.Config.MAP_MOBILE_HEIGHT;
-            //}
             // map作成
             this.addMap();
             // domイベント
             this.addDomEvents();
             // データ取得
             this.getMapData();
-            // 現在地追跡
-            if (mobile) {
+            // モバイルは現在地追跡
+            if (this.isMobile()) {
                 this.watchCurrent();
             }
         },

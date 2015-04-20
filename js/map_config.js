@@ -32,16 +32,6 @@
          */ 
         ZOOM: 17,
         /**
-         * モバイル幅
-         * @type {String}
-         */ 
-        MOBILE_WIDTH: '100%',
-        /**
-         * モバイル高さ
-         * @type {String}
-         */ 
-        MOBILE_HEIGHT: '100%',
-        /**
          * 画像ディレクトリ
          * @type {String}
          */

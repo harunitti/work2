@@ -1,6 +1,6 @@
 <?php
 
-class GetMapData
+class MakeMapData
 {
     protected $data = [];
     
@@ -78,7 +78,7 @@ class GetMapData
     }
 }
 
-$data = new GetMapData;
+$data = new MakeMapData;
 $data->addCategory("歴史", "rekishi_kojyo_map.csv");
 $data->addCategory("自然", "shizen_kojyo_map.csv");
 $data->make();

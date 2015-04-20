@@ -94,8 +94,6 @@
             this.addMap();
             // navi作成
             this.addNavigation();
-            // domイベント
-            this.addDomEvents();
             // データ取得
             this.getMapData();
             // モバイルは現在地追跡
@@ -159,12 +157,6 @@
                 }
             }
             return -1;
-        },
-        /**
-         * Domイベント設定
-         * @return {Void}
-         */
-        addDomEvents: function () {
         },
         /**
          * @param {google.maps.Marker} marker

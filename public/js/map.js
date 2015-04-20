@@ -68,10 +68,15 @@
          */
         $cannelModal: $('#cannel'),
         /**
-         * メニュー
+         * ナビ
          * @type {Object}
          */
-        $menu: null,
+        $navi: null,
+        /**
+         * ナビボタングループ
+         * @type {Object}
+         */
+        $naviBtnGroup: null,
         /**
          * 地点セレクト
          * @type {Object}
@@ -131,7 +136,9 @@
                     self.locationMarker(marker);
                 }
             });
+            this.$naviBtnGroup = $('<div>').addClass('btn-group');
             this.$navi.append(this.$pointSelect);
+            this.$navi.append(this.$naviBtnGroup);
         },
         /**
          * マーカー処理
@@ -198,7 +205,6 @@
                 }
             });
         },
-
         /**
          * ナビゲーション設定
          * @param {google.maps.LatLng} data
@@ -212,7 +218,7 @@
             this.$data = data; 
             // タイトル
             self.$titleBtn = $("<button>").addClass("btn btn-inverse category");
-            self.$navi.append(self.$titleBtn);
+            self.$naviBtnGroup.append(self.$titleBtn);
             self.setMapData(data[0].name, data[0].data);
             // カテゴリ
             var $cannelBtn = $('<button>').addClass('btn btn-success').text('カテゴリ');
@@ -220,12 +226,12 @@
                 self.$cannelModal.modal();
             });
             // Info
-            self.$navi.append($cannelBtn);
+            self.$naviBtnGroup.append($cannelBtn);
             var $infoBtn = $('<button>').addClass('btn btn-info').text('Info');
             $infoBtn.on('mousedown', function () {
                 self.$settingModal.modal();
             });
-            self.$navi.append($infoBtn);
+            self.$naviBtnGroup.append($infoBtn);
             self.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
         },
         /**

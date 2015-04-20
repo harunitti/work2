@@ -92,6 +92,8 @@
             this.mapDiv.style.width = this.mapDiv.style.height = '100%';
             // map作成
             this.addMap();
+            // navi作成
+            this.addNavigation();
             // domイベント
             this.addDomEvents();
             // データ取得
@@ -112,10 +114,17 @@
             // マップ作成
             var options = this.getMapOptions(latLng);
             this.map = new google.maps.Map(this.mapDiv, options);
+        },
+        /**
+         * ナビ作成
+         * @return {Void}
+         */
+        addNavigation: function () {
+            var self = this;
             this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
-            this.$pointSelect.css('max-width', '300px');// TEST
+            this.$pointSelect.css('max-width', '300px');
             this.$pointSelect.attr('id', 'list');
             this.$pointSelect.on('change', function () {
                 var marker = $('#list option:selected').data('marker');
@@ -124,22 +133,7 @@
                     self.locationMarker(marker);
                 }
             });
-            self.$navi.append(this.$pointSelect);
-            /*
-             this.$menu = $('<div>');
-             // TODO: style.cssに記述
-             var h;
-             if (this.isMobile()) {
-             h = '20%';
-             } else {
-             h = '15%';
-             }
-             this.$menu.attr('id', 'menu')
-             .css('height', '80px')
-             .css('width', '100%');
-             //.css('background-color', '#003366')
-             //.css('opacity', '0.85');
-             */
+            this.$navi.append(this.$pointSelect);
         },
         /**
          * マーカー処理

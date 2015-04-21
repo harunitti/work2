@@ -87,7 +87,9 @@
 
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast2.gif)
 
-# マップ本体 準備1 CSV設置
+# マップ本体 準備
+
+## 1. CSV設置
 
 マップ作成ツールでCSVファイルを作成したらcsvディレクトリを作成して配下に設置します。
 
@@ -102,9 +104,10 @@ CSVを設置する。
 shizen_kojyo_map.csv    rekishi_kojyo_map.csv
 ~~~
 
-# マップ本体 準備2 make_map_data.php編集
+## 2. make_map_data.php編集
 
 make_map_data.phpはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
+
 make_map_data.phpの下部でカテゴリ名と対応するCSVを記述してください。
 
 ~~~
@@ -114,7 +117,7 @@ $data->addCategory("自然", "shizen_kojyo_map.csv");
 $data->make();
 ~~~
 
-# マップ本体 準備3 make_map_data.php実行
+## 3. make_map_data.php実行
 
 make_map_data.phpを実行すると同階層にmap_data.jsonが作成されます。
 
@@ -125,7 +128,7 @@ map_data.json
 ~~~
 
 
-# マップ本体 準備4 マップデータ配置
+## 4. マップデータ配置
 
 map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
@@ -134,7 +137,7 @@ map_data.jsonをpublic/data/map_data.jsonとして設置します。
 % mv map_data.json public/data/map_data.json 
 ~~~
 
-# マップ本体 準備5 初期位置(緯度経度)設定
+## 5. 初期位置(緯度経度)設定
 
 js/map_config.jsで初期位置(緯度経度)の設定をしてください。
 

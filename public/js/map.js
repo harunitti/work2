@@ -438,6 +438,9 @@
                 zIndex: zIndex// 最前面
             });
             infoWindow.open(this.map);
+            google.maps.event.addListenerOnce(infoWindow, 'closeclick', function (e) {
+                 self.removeInfoWindow(marker);
+            });
             marker.infoWindow = infoWindow;
         },
         /**

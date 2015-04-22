@@ -234,7 +234,8 @@
             for (var i = 0;i < data.length; i ++) {
                 var categoryName = data[i].name;
                 var $label = $('<label>').addClass('radio');
-                var $radio = $('<input type="radio" data-toggle="radio" name="category" data-radiocheck-toggle="radio">').val(i).attr('id', categoryName + i);
+                var $radio = $('<input type="radio" data-toggle="radio" name="category" data-radiocheck-toggle="radio">')
+                    .val(i).attr('id', categoryName + i);
                 if (i == 0) {
                     $radio.attr('checked', 'checked');
                 }

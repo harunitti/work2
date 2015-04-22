@@ -202,7 +202,7 @@
             }, 1500);
         },
         /**
-         * CSV取得
+         * 地図データ取得
          * @return void
          */
         getMapData: function () {

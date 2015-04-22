@@ -384,9 +384,8 @@
                 if (!marker.infoWindow) {
                     return;
                 }
-                if (marker === target) {
-                    marker.infoWindow.setZIndex(self.markers.length);
-                } else {
+                // target以外を下へ
+                if (marker != target) {
                     marker.infoWindow.setZIndex(0);
                 }
             }, marker);
@@ -399,24 +398,27 @@
         createInfoWindow: function (marker) {
             var self = this;
             this.removeInfoWindow(marker);
+            var zIndex = this.markers.length;
             if (marker.photo.name) {
                 var path = this.photoDir + '/' + marker.photo.name;
                 var img = new Image();
                 img.src = path;
                 img.onload = function () {
-                    self.setInfoWindow(marker, path);
+                    self.setInfoWindow(marker, path, zIndex);
                 }
             } else {
-                this.setInfoWindow(marker, null);
+                this.setInfoWindow(marker, null, zIndex);
             }
         },
         /**
          * 情報ウインドウ作成
          * @param {google.maps.Marker} marker
          * @param {String} path
+         * @param {Number} zIndex
          * @return {Void}
          */ 
-        setInfoWindow: function (marker, path) {
+        setInfoWindow: function (marker, path, zIndex) {
+            var self = this;
             var content = '';
             content += '<div class="infoWin">';
             content += '<div><strong>';
@@ -425,14 +427,15 @@
             content += '<div>';
             content += marker.info;
             content += '</div>';
-            if (marker.photo.name) {
+            if (path) {
                 content += '<img src="' + path + '">';
             }
             content += '</div>';
             var infoWindow = new google.maps.InfoWindow({
                 content: content,
                 position: marker.position,
-                pixelOffset: new google.maps.Size(0, marker.iconOffsetHeight)
+                pixelOffset: new google.maps.Size(0, marker.iconOffsetHeight),
+                zIndex: zIndex// 最前面
             });
             infoWindow.open(this.map);
             marker.infoWindow = infoWindow;

@@ -369,14 +369,6 @@
                     self.removeInfoWindow(marker);
                 }
             });
-            // マウスオーバー
-            /*
-            google.maps.event.addListener(marker, 'mouseover', function (e) {
-                if (marker.infoWindow) {
-                    self.bringToFront(marker);
-                }
-            });
-            */
             this.markers.push(marker);
             return marker;
         },

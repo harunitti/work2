@@ -68,6 +68,11 @@
          */
         $cannelModal: $('#cannel'),
         /**
+         * モダール
+         * @type {Object}
+         */
+        $photoModal: $('#photo'),
+        /**
          * ナビ
          * @type {Object}
          */
@@ -101,6 +106,8 @@
             this.addNavigation();
             // データ取得
             this.getMapData();
+            // イベント
+            this.addDomEvents();
             // モバイルは現在地追跡
             if (this.isMobile()) {
                 this.watchCurrent();
@@ -139,6 +146,25 @@
             this.$naviBtnGroup = $('<div>').addClass('btn-group');
             this.$navi.append(this.$pointSelect);
             this.$navi.append(this.$naviBtnGroup);
+        },
+        /**
+         * domイベント
+         * @return {Void}
+         */
+        addDomEvents: function () {
+            var self = this;
+            // 画像拡大表示
+            $(document).on('mousedown', '.view-large', function () {
+                var path = $(this).data('path');
+                var title = $(this).data('title');
+                var info = $(this).data('info');
+                if (path) {
+                    self.$photoModal.find('.modal-title').text(title);
+                    self.$photoModal.find('.large-photo').prop('src', path);
+                    self.$photoModal.find('.info').html(info);
+                    self.$photoModal.modal();
+                }
+            });
         },
         /**
          * マーカー処理
@@ -336,7 +362,7 @@
             }
             if (pin.name) {
                 var path = this.pinDir + pin.name;
-                options.icon = {url: path};
+                options.icon = new google.maps.MarkerImage(path, null, null, null, new google.maps.Size(pin.size.width, pin.size.height))
                 options.pin = pin;
                 options.iconOffsetHeight = - pin.size.height;
             } else {
@@ -387,6 +413,9 @@
                 // target以外を下へ
                 if (marker != target) {
                     marker.infoWindow.setZIndex(0);
+                    marker.setZIndex(0);
+                } else {
+                    marker.setZIndex(self.markers.length);
                 }
             }, marker);
         },
@@ -400,7 +429,7 @@
             this.removeInfoWindow(marker);
             var zIndex = this.markers.length;
             if (marker.photo.name) {
-                var path = this.photoDir + '/' + marker.photo.name;
+                var path = this.photoDir + marker.photo.name;
                 var img = new Image();
                 img.src = path;
                 img.onload = function () {
@@ -428,7 +457,10 @@
             content += marker.info;
             content += '</div>';
             if (path) {
+                content += '<div class="view-large" src="' + path + '" data-path="'+ path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
+                content += '<a href="javascript:void(0);" >大きいサイズで見る</a><br>';
                 content += '<img src="' + path + '">';
+                content += '</div>';
             }
             content += '</div>';
             var infoWindow = new google.maps.InfoWindow({

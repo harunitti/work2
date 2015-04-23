@@ -156,7 +156,7 @@
             this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
-            this.$pointSelect.css('min-width', '300px');
+            //this.$pointSelect.css('min-width', '300px');
             this.$pointSelect.attr('id', 'list');
             this.$pointSelect.on('change', function () {
                 var marker = $('#list option:selected').data('marker');
@@ -202,6 +202,15 @@
                     self.$photoModal.modal();
                 }
             });
+            // 画像拡大表示
+            $(document).on('mousedown', '.slide-photo', function () {
+                var marker = $(this).data('marker');
+                if (marker) {
+                    self.removeAllInfoWindow();
+                    self.locationMarker(marker);
+                }
+                $('#slideshow').modal('hide');
+            });
         },
         /**
          * ナビゲーション設定
@@ -215,9 +224,49 @@
             var self = this;
             this.$data = data; 
             // タイトル
-            self.$titleBtn = $("<button>").addClass("btn btn-inverse category");
-            self.$naviBtnGroup.append(self.$titleBtn);
+            this.$titleBtn = $("<button>").addClass("btn btn-inverse category");
+            this.$naviBtnGroup.append(self.$titleBtn);
+
+            // カテゴリー機能設定
+            this.setCategoryModal(data);
+            // カテゴリ
+            var $cannelBtn = $('<button>').addClass('btn btn-success').prop('title', '設定');;
+            $cannelBtn.append($('<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'));
+            $cannelBtn.on('mousedown', function () {
+                self.$cannelModal.modal();
+            });
+            // Info
+            this.$naviBtnGroup.append($cannelBtn);
+            var $infoBtn = $('<button>').addClass('btn btn-info').prop('title', 'Info');
+            $infoBtn.append($('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>'));
+            $infoBtn.on('mousedown', function () {
+                self.$settingModal.modal();
+            });
             
+            // スライドショー
+            var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');;
+            $slideShowBtn.append($('<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>'));
+            this.$naviBtnGroup.append($slideShowBtn);
+            
+            // ボタン配置
+            this.$naviBtnGroup.append($infoBtn);
+            this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
+            // 初期表示設定
+            this.setMapData(data[0].name, data[0].data);
+
+            $slideShowBtn.on('mousedown', function () {
+                // スライドショー機能設定
+                self.setSlideShowModal();
+                $('#slideshow').modal();
+            });
+        },
+        /**
+         * カテゴリ設定
+         * @param {Array} data
+         * @return {Void}
+         */
+        setCategoryModal: function (data) {
+            var self = this;
             for (var i = 0;i < data.length; i ++) {
                 var categoryName = data[i].name;
                 var $label = $('<label>').addClass('radio');
@@ -229,27 +278,33 @@
                 $label.text(categoryName).attr('for', categoryName + i).prepend($radio);
                 $('#categoryList').append($label);
             }
+            // カテゴリ選択
             $('[name="category"]').on('change', function () {
                 var no = $('input[name="category"]:checked').val();
                 self.removeAllMarker();
                 self.removeAllInfoWindow();
+                self.markers = [];
                 self.setMapData(data[no].name, data[no].data);
                 self.$cannelModal.modal('hide');
+            });  
+        },
+        /**
+         * カテゴリ設定
+         * @param {Array} data
+         * @return {Void}
+         */
+        setSlideShowModal: function () {
+            var self = this;
+            $('#slidelist').html('');
+            this.eachMarkers(function (marker) {
+                if (!marker.photo.name) {
+                    return;
+                }
+                var path = self.photoDir + marker.photo.name;
+                var $img = $('<img>').prop('src', path).addClass('slide-photo img-responsive img-thumbnail').data('marker', marker);
+                console.log('$img', path);
+                $('#slidelist').append($img);
             });
-            self.setMapData(data[0].name, data[0].data);
-            // カテゴリ
-            var $cannelBtn = $('<button>').addClass('btn btn-success').text('カテゴリ');
-            $cannelBtn.on('mousedown', function () {
-                self.$cannelModal.modal();
-            });
-            // Info
-            self.$naviBtnGroup.append($cannelBtn);
-            var $infoBtn = $('<button>').addClass('btn btn-info').text('Info');
-            $infoBtn.on('mousedown', function () {
-                self.$settingModal.modal();
-            });
-            self.$naviBtnGroup.append($infoBtn);
-            self.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
         },
         /**
          * マップデータ反映

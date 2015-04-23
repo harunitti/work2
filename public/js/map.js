@@ -126,6 +126,28 @@
             this.map = new google.maps.Map(this.mapDiv, options);
         },
         /**
+         * マップオブション取得
+         * @param {google.maps.LatLng} latLng
+         * @return {Object} options
+         */
+        getMapOptions: function (latLng) {
+            return {
+                zoom: this.zoom,
+                center: latLng,
+                disableDoubleClickZoom: true,
+                draggable: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_RIGHT
+                },
+                panControl: false
+            }
+        },
+        /**
          * ナビ作成
          * @return {Void}
          */
@@ -148,6 +170,21 @@
             this.$navi.append(this.$naviBtnGroup);
         },
         /**
+         * 地図データ取得
+         * @return void
+         */
+        getMapData: function () {
+            var self = this;
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/data/map_data.json",
+                success: function (data) {
+                    self.setNavigation(data)
+                }
+            });
+        },
+        /**
          * domイベント
          * @return {Void}
          */
@@ -163,82 +200,6 @@
                     self.$photoModal.find('.large-photo').prop('src', path);
                     self.$photoModal.find('.info').html(info);
                     self.$photoModal.modal();
-                }
-            });
-        },
-        /**
-         * マーカー処理
-         * @param {Function} func
-         * @param {google.maps.Marker} target
-         * @return {Void}
-         */
-        eachMarkers: function (func, target) {
-            for (var i = 0; i < this.markers.length; i++) {
-                var marker = this.markers[i];
-                func(marker, i, target)
-            }
-        },
-        /**
-         * マーカー検索
-         * @param {google.maps.Marker} target
-         * @return {Number} i
-         */
-        searchMarkers: function (target) {
-            for (var i = 0; i < this.markers.length; i++) {
-                if (this.markers[i] === target) {
-                    return i;
-                }
-            }
-            return -1;
-        },
-        /**
-         * 全マーカー削除
-         * @return {Void}
-         */
-        removeAllMarker: function () {
-            var self = this;
-            this.eachMarkers(function(marker) {
-                self.removeInfoWindow(marker);
-                marker.setMap(null);
-            });
-        },
-        /**
-         * @param {google.maps.Marker} marker
-         * @return void
-         */
-        locationMarker: function (marker) {
-            var self = this;
-            var latLng = marker.getPosition();
-            google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
-                self.popupMarker(marker);
-            });
-            this.map.panTo(latLng);
-        },
-        /**
-         * @param {google.maps.Marker} marker
-         * @return void
-         */
-        popupMarker: function (marker) {
-            var self = this;
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-            window.setTimeout(function () {
-                marker.setAnimation(null);
-                self.createInfoWindow(marker);
-                self.bringToFront(marker);
-            }, 1500);
-        },
-        /**
-         * 地図データ取得
-         * @return void
-         */
-        getMapData: function () {
-            var self = this;
-            $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: "/data/map_data.json",
-                success: function (data) {
-                    self.setNavigation(data)
                 }
             });
         },
@@ -313,28 +274,6 @@
             }
         },
         /**
-         * マップオブション取得
-         * @param {google.maps.LatLng} latLng
-         * @return {Object} options
-         */
-        getMapOptions: function (latLng) {
-            return {
-                zoom: this.zoom,
-                center: latLng,
-                disableDoubleClickZoom: true,
-                draggable: true,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoomControl: false,
-                streetViewControl: false,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_RIGHT
-                },
-                panControl: false
-            }
-        },
-        /**
          * マーカー作成
          * @param {google.maps.Map} map
          * @param {String} category
@@ -398,6 +337,69 @@
             });
             this.markers.push(marker);
             return marker;
+        },
+        /**
+         * マーカー処理
+         * @param {Function} func
+         * @param {google.maps.Marker} target
+         * @return {Void}
+         */
+        eachMarkers: function (func, target) {
+            for (var i = 0; i < this.markers.length; i++) {
+                var marker = this.markers[i];
+                func(marker, i, target)
+            }
+        },
+        /**
+         * マーカー検索
+         * @param {google.maps.Marker} target
+         * @return {Number} i
+         */
+        searchMarkers: function (target) {
+            for (var i = 0; i < this.markers.length; i++) {
+                if (this.markers[i] === target) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+        /**
+         * 全マーカー削除
+         * @return {Void}
+         */
+        removeAllMarker: function () {
+            var self = this;
+            this.eachMarkers(function(marker) {
+                self.removeInfoWindow(marker);
+                marker.setMap(null);
+            });
+        },
+        /**
+         * 指定マーカー位置が中心になるように移動
+         * @param {google.maps.Marker} marker
+         * @return void
+         */
+        locationMarker: function (marker) {
+            var self = this;
+            var latLng = marker.getPosition();
+            google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
+                self.popupMarker(marker);
+            });
+            this.map.panTo(latLng);
+        },
+        /**
+         * 指定マーカージャンプ
+         * @param {google.maps.Marker} marker
+         * @return void
+         */
+        popupMarker: function (marker) {
+            var self = this;
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            window.setTimeout(function () {
+                marker.setAnimation(null);
+                self.createInfoWindow(marker);
+                self.bringToFront(marker);
+            }, 1500);
         },
         /**
          * マーカー最前面へ

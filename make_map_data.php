@@ -81,4 +81,5 @@ class MakeMapData
 $data = new MakeMapData;
 $data->addCategory("歴史", "rekishi_kojyo_map.csv");
 $data->addCategory("自然", "shizen_kojyo_map.csv");
+$data->addCategory("銅像", "bronze_kojyo_map.csv");
 $data->make();

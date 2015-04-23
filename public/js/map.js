@@ -61,17 +61,22 @@
          * モダール
          * @type {Object}
          */
-        $settingModal: $('#setting'),
+        $infoModal: $('#infoModal'),
         /**
          * モダール
          * @type {Object}
          */
-        $cannelModal: $('#cannel'),
+        $settingModal: $('#settingModal'),
         /**
          * モダール
          * @type {Object}
          */
-        $photoModal: $('#photo'),
+        $photoModal: $('#largePhotoModal'),
+        /**
+         * モダール
+         * @type {Object}
+         */
+        $slideModal: $('#slideshowModal'),
         /**
          * ナビ
          * @type {Object}
@@ -91,7 +96,12 @@
          * データ
          * @type {Array}
          */
-        $data: [],
+        data: [],
+        /**
+         * 選択中の情報
+         * @type {Array}
+         */
+        selectedInfo: {scrollTop: 0},
         /**
          * 初期処理
          * @param {Object} options
@@ -118,7 +128,6 @@
          * @return {Void}
          */
         addMap: function () {
-            var self = this;
             // 初期中心地点
             var latLng = new google.maps.LatLng(this.lat, this.lng);// 緯度 経度
             // マップ作成
@@ -202,14 +211,15 @@
                     self.$photoModal.modal();
                 }
             });
-            // 画像拡大表示
+            // スライドショーの画像選択
             $(document).on('mousedown', '.slide-photo', function () {
                 var marker = $(this).data('marker');
                 if (marker) {
                     self.removeAllInfoWindow();
                     self.locationMarker(marker);
                 }
-                $('#slideshow').modal('hide');
+                self.selectedInfo.scrollTop = self.$slideModal.scrollTop();
+                self.$slideModal.modal('hide');
             });
         },
         /**
@@ -222,43 +232,48 @@
                 return;
             }
             var self = this;
-            this.$data = data; 
-            // タイトル
-            this.$titleBtn = $("<button>").addClass("btn btn-inverse category");
-            this.$naviBtnGroup.append(self.$titleBtn);
-
-            // カテゴリー機能設定
-            this.setCategoryModal(data);
-            // カテゴリ
-            var $cannelBtn = $('<button>').addClass('btn btn-success').prop('title', '設定');;
-            $cannelBtn.append($('<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'));
-            $cannelBtn.on('mousedown', function () {
-                self.$cannelModal.modal();
-            });
-            // Info
-            this.$naviBtnGroup.append($cannelBtn);
-            var $infoBtn = $('<button>').addClass('btn btn-info').prop('title', 'Info');
-            $infoBtn.append($('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>'));
-            $infoBtn.on('mousedown', function () {
-                self.$settingModal.modal();
-            });
-            
-            // スライドショー
-            var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');;
-            $slideShowBtn.append($('<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>'));
-            this.$naviBtnGroup.append($slideShowBtn);
-            
+            this.data = data; 
             // ボタン配置
-            this.$naviBtnGroup.append($infoBtn);
+            this.setNavigationButton();
             this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
             // 初期表示設定
             this.setMapData(data[0].name, data[0].data);
-
-            $slideShowBtn.on('mousedown', function () {
-                // スライドショー機能設定
-                self.setSlideShowModal();
-                $('#slideshow').modal();
+            // カテゴリー機能設定
+            this.setCategoryModal(data);
+        },
+        /**
+         * ナビゲーションボタン設定
+         * @return {Void}
+         */
+        setNavigationButton: function () {
+            var self = this;
+            // タイトル
+            this.$titleBtn = $("<button>").addClass("btn btn-inverse category");
+            this.$naviBtnGroup.append(this.$titleBtn);
+            // 設定ボタン
+            var $settingBtn = $('<button>').addClass('btn btn-success').prop('title', '設定');
+            $settingBtn.append($('<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'));
+            $settingBtn.on('mousedown', function () {
+                self.$settingModal.modal();
             });
+            this.$naviBtnGroup.append($settingBtn);
+            // 写真一覧ボタン
+            var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');
+            $slideShowBtn.append($('<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>'));
+            $slideShowBtn.on('mousedown', function () {
+                self.$slideModal.animate({
+                    scrollTop: self.selectedInfo.scrollTop
+                }, "fast", "swing");
+                self.$slideModal.modal();
+            });
+            this.$naviBtnGroup.append($slideShowBtn);
+            // Infoボタン
+            var $infoBtn = $('<button>').addClass('btn btn-info').prop('title', 'Info');
+            $infoBtn.append($('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>'));
+            $infoBtn.on('mousedown', function () {
+                self.$infoModal.modal();
+            });
+            this.$naviBtnGroup.append($infoBtn);
         },
         /**
          * カテゴリ設定
@@ -270,7 +285,7 @@
             for (var i = 0;i < data.length; i ++) {
                 var categoryName = data[i].name;
                 var $label = $('<label>').addClass('radio');
-                var $radio = $('<input type="radio" data-toggle="radio" name="category" data-radiocheck-toggle="radio">')
+                var $radio = $('<input type="radio">').prop("name", "category").data("toggle", "radio")
                     .val(i).attr('id', categoryName + i);
                 if (i == 0) {
                     $radio.attr('checked', 'checked');
@@ -278,6 +293,7 @@
                 $label.text(categoryName).attr('for', categoryName + i).prepend($radio);
                 $('#categoryList').append($label);
             }
+            $(':radio').radiocheck();
             // カテゴリ選択
             $('[name="category"]').on('change', function () {
                 var no = $('input[name="category"]:checked').val();
@@ -285,8 +301,13 @@
                 self.removeAllInfoWindow();
                 self.markers = [];
                 self.setMapData(data[no].name, data[no].data);
-                self.$cannelModal.modal('hide');
-            });  
+                self.$settingModal.modal('hide');
+                self.selectedInfo.scrollTop = 0;
+                // スライドショー機能設定
+                self.setSlideShowModal();
+            });
+            // スライドショー機能設定
+            this.setSlideShowModal();
         },
         /**
          * カテゴリ設定

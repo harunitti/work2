@@ -99,9 +99,22 @@
         data: [],
         /**
          * 選択中の情報
-         * @type {Array}
+         * @type {Object}
          */
         selectedInfo: {scrollTop: 0},
+        /**
+         * ツールチップ
+         * @type {Object}
+         */
+        toolTip: null,
+        /**
+         * マウス座標
+         * @type {Object}
+         */ 
+        mouse: {
+            x: 0,
+            y: 0
+        },
         /**
          * 初期処理
          * @param {Object} options
@@ -165,10 +178,9 @@
             this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
-            //this.$pointSelect.css('min-width', '300px');
-            this.$pointSelect.attr('id', 'list');
+            this.$pointSelect.attr('id', 'pointSelect');
             this.$pointSelect.on('change', function () {
-                var marker = $('#list option:selected').data('marker');
+                var marker = $('#pointSelect option:selected').data('marker');
                 if (marker) {
                     self.removeAllInfoWindow();
                     self.locationMarker(marker);
@@ -257,25 +269,22 @@
             this.$titleBtn = $("<button>").addClass("btn btn-inverse category");
             this.$naviBtnGroup.append(this.$titleBtn);
             // 設定ボタン
-            var $settingBtn = $('<button>').addClass('btn btn-success').prop('title', '設定');
-            $settingBtn.append($('<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>'));
+            var $settingBtn = $('<button>').addClass('btn btn-warning').prop('title', '設定');
+            $settingBtn.append($('<span class="fui-gear" aria-hidden="true"></span>'));
             $settingBtn.on('mousedown', function () {
                 self.$settingModal.modal();
             });
             this.$naviBtnGroup.append($settingBtn);
             // 写真一覧ボタン
             var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');
-            $slideShowBtn.append($('<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>'));
+            $slideShowBtn.append($('<span class="fui-image" aria-hidden="true"></span>'));
             $slideShowBtn.on('mousedown', function () {
-                self.$slideModal.animate({
-                    scrollTop: self.selectedInfo.scrollTop
-                }, "fast", "swing");
-                self.$slideModal.modal();
+                self.slideView();
             });
             this.$naviBtnGroup.append($slideShowBtn);
             // Infoボタン
-            var $infoBtn = $('<button>').addClass('btn btn-info').prop('title', 'Info');
-            $infoBtn.append($('<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>'));
+            var $infoBtn = $('<button>').addClass('btn btn-primary').prop('title', 'Info');
+            $infoBtn.append($('<span class="fui-info-circle" aria-hidden="true"></span>'));
             $infoBtn.on('mousedown', function () {
                 self.$infoModal.modal();
             });
@@ -291,13 +300,19 @@
             for (var i = 0;i < data.length; i ++) {
                 var categoryName = data[i].name;
                 var $label = $('<label>').addClass('radio');
-                var $radio = $('<input type="radio">').prop("name", "category").data("toggle", "radio")
-                    .val(i).attr('id', categoryName + i);
+                var $radio = $('<input type="radio">')
+                    .prop('name', 'category')
+                    .data('toggle', 'radio')
+                    .val(i)
+                    .attr('id', categoryName + i);
                 if (i == 0) {
                     $radio.attr('checked', 'checked');
                 }
-                $label.text(categoryName).attr('for', categoryName + i).prepend($radio);
-                $('#categoryList').append($label);
+                $label
+                    .text(categoryName)
+                    .attr('for', categoryName + i)
+                    .prepend($radio);
+                self.$settingModal.find('#categoryList').append($label);
             }
             $(':radio').radiocheck();
             // カテゴリ選択
@@ -316,6 +331,17 @@
             this.setSlideShowModal();
         },
         /**
+         * スライドビュー
+         * @param {Array} data
+         * @return {Void}
+         */
+        slideView: function () {
+            this.$slideModal.animate({
+                scrollTop: this.selectedInfo.scrollTop
+            }, "fast", "swing");
+            this.$slideModal.modal();
+        },
+        /**
          * カテゴリ設定
          * @param {Array} data
          * @return {Void}
@@ -328,10 +354,15 @@
                     return;
                 }
                 var path = self.photoDir + marker.photo.name;
-                var $img = $('<img>').prop('src', path).addClass('slide-photo img-responsive img-thumbnail').data('marker', marker);
-                console.log('$img', path);
-                $('#slidelist').append($img);
+                var $img = $('<img>').prop('src', path)
+                                .addClass('slide-photo img-responsive img-thumbnail')
+                                .data('marker', marker)
+                                .css('cursor', 'pointer')
+                                .prop('title', marker.title)
+                                .data('toggle', 'tooltip').data('placement', 'auto');
+                self.$slideModal.find('#slideList').append($img);
             });
+            $('.slide-photo').tooltip();
         },
         /**
          * マップデータ反映
@@ -417,8 +448,36 @@
                     self.removeInfoWindow(marker);
                 }
             });
+            // マウスオーバー
+            google.maps.event.addListener(marker, 'mouseover', function (e) {
+                self.toolTipOn(marker.title);
+            });
+            google.maps.event.addListener(marker, 'mouseout', function (e) {
+                self.toolTipOff();
+            });
             this.markers.push(marker);
             return marker;
+        },
+        /**
+         * ツールチップ表示
+         * @param {String} title
+         * @return {Void}
+         */
+        toolTipOn: function (title) {
+            this.$toolTip = $('<div id="ttip">').css("left", this.mouse.x + "px").css("top", this.mouse.y + "px").attr('title', title);
+            $('body').append(this.$toolTip);
+            this.$toolTip.tooltip('show');
+        },
+        /**
+         * ツールチップ非表示
+         * @return {Void}
+         */
+        toolTipOff: function () {
+            if (this.$toolTip) {
+                this.$toolTip.tooltip('hide');
+                this.$toolTip.remove();
+                this.$toolTip = null;
+            }
         },
         /**
          * マーカー処理

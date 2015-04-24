@@ -39,6 +39,10 @@ div#canvas {
     width: 180px;
 }
 
+#ttip {
+    position: absolute;
+}
+
 /*
 Copyright (c) 2012 Steve Stedman
 Released under the MIT license

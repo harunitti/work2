@@ -220,6 +220,12 @@
                 }
                 self.selectedInfo.scrollTop = self.$slideModal.scrollTop();
                 self.$slideModal.modal('hide');
+                //self.$pointSelect.val(marker);
+            });
+            //
+            google.maps.event.addDomListener(this.mapDiv, 'mousemove', function (e) {
+                self.mouse.x = e.clientX || e.pageX;
+                self.mouse.y = e.clientY || e.pageY
             });
         },
         /**
@@ -316,7 +322,7 @@
          */
         setSlideShowModal: function () {
             var self = this;
-            $('#slidelist').html('');
+            this.$slideModal.find('#slideList').html('');
             this.eachMarkers(function (marker) {
                 if (!marker.photo.name) {
                     return;

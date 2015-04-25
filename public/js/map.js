@@ -1,15 +1,16 @@
 /**
  * マップ
- * 
+ *
  * @author yoshida@niiyz.com (Tetsuya Yoshida)
  */
-(function(global) {
+(function (global) {
 
     'use strict';
-    
+
     var Map = global.Map || (global.Map = {});
-    
-    Map.App = function App() {};
+
+    Map.App = function App() {
+    };
 
     Map.App.prototype = {
         /**
@@ -103,19 +104,6 @@
          */
         selectedInfo: {scrollTop: 0},
         /**
-         * ツールチップ
-         * @type {Object}
-         */
-        toolTip: null,
-        /**
-         * マウス座標
-         * @type {Object}
-         */ 
-        mouse: {
-            x: 0,
-            y: 0
-        },
-        /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
@@ -141,11 +129,15 @@
          * @return {Void}
          */
         addMap: function () {
+            var self = this;
             // 初期中心地点
             var latLng = new google.maps.LatLng(this.lat, this.lng);// 緯度 経度
             // マップ作成
             var options = this.getMapOptions(latLng);
             this.map = new google.maps.Map(this.mapDiv, options);
+            google.maps.event.addListener(this.map, 'zoom_changed', function (e) {
+                self.toolTipsOff();
+            });
         },
         /**
          * マップオブション取得
@@ -175,7 +167,7 @@
          */
         addNavigation: function () {
             var self = this;
-            this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
+            this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed').css('position', 'absolute').zIndex(100);
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
             this.$pointSelect.attr('id', 'pointSelect');
@@ -232,12 +224,6 @@
                 }
                 self.selectedInfo.scrollTop = self.$slideModal.scrollTop();
                 self.$slideModal.modal('hide');
-                //self.$pointSelect.val(marker);
-            });
-            //
-            google.maps.event.addDomListener(this.mapDiv, 'mousemove', function (e) {
-                self.mouse.x = e.clientX || e.pageX;
-                self.mouse.y = e.clientY || e.pageY
             });
         },
         /**
@@ -250,7 +236,7 @@
                 return;
             }
             var self = this;
-            this.data = data; 
+            this.data = data;
             // ボタン配置
             this.setNavigationButton();
             this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
@@ -266,7 +252,7 @@
         setNavigationButton: function () {
             var self = this;
             // タイトル
-            this.$titleBtn = $("<button>").addClass("btn btn-inverse category");
+            this.$titleBtn = $("<button>").addClass("btn btn-inverse category").css('font-size', '0.8em');
             this.$naviBtnGroup.append(this.$titleBtn);
             // 設定ボタン
             var $settingBtn = $('<button>').addClass('btn btn-warning').prop('title', '設定');
@@ -282,6 +268,13 @@
                 self.slideView();
             });
             this.$naviBtnGroup.append($slideShowBtn);
+            // ツールチップ
+            var $toolTipBtn = $('<button>').addClass('btn btn-default').prop('title', 'ツールチップ');
+            $toolTipBtn.append($('<span class="fui-eye" aria-hidden="true"></span>'));
+            $toolTipBtn.on('mousedown', function (){
+                self.toolTipsToggle();
+            });
+            this.$naviBtnGroup.append($toolTipBtn);
             // Infoボタン
             var $infoBtn = $('<button>').addClass('btn btn-primary').prop('title', 'Info');
             $infoBtn.append($('<span class="fui-info-circle" aria-hidden="true"></span>'));
@@ -297,7 +290,7 @@
          */
         setCategoryModal: function (data) {
             var self = this;
-            for (var i = 0;i < data.length; i ++) {
+            for (var i = 0; i < data.length; i++) {
                 var categoryName = data[i].name;
                 var $label = $('<label>').addClass('radio');
                 var $radio = $('<input type="radio">')
@@ -355,14 +348,12 @@
                 }
                 var path = self.photoDir + marker.photo.name;
                 var $img = $('<img>').prop('src', path)
-                                .addClass('slide-photo img-responsive img-thumbnail')
-                                .data('marker', marker)
-                                .css('cursor', 'pointer')
-                                .prop('title', marker.title)
-                                .data('toggle', 'tooltip').data('placement', 'auto');
+                    .addClass('slide-photo img-responsive img-thumbnail')
+                    .data('marker', marker)
+                    .css('cursor', 'pointer')
+                    .prop('title', marker.title);
                 self.$slideModal.find('#slideList').append($img);
             });
-            $('.slide-photo').tooltip();
         },
         /**
          * マップデータ反映
@@ -374,14 +365,14 @@
             this.$titleBtn.text(category);
             this.$pointSelect.html('').append($('<option>').text('メニュー'));
             for (var i = 0; i < data.length; i++) {
-                var title   = data[i]['title'];
-                var lat     = data[i]['lat'];
-                var lng     = data[i]['lng'];
-                var info    = data[i]['info'];
-                var pin     = data[i]['pin'];
-                var photo   = data[i]['photo'];
-                var latLng  = new google.maps.LatLng(lat, lng);
-                var marker  = this.setMaker(category, title, latLng, info, pin, photo);
+                var title = data[i]['title'];
+                var lat = data[i]['lat'];
+                var lng = data[i]['lng'];
+                var info = data[i]['info'];
+                var pin = data[i]['pin'];
+                var photo = data[i]['photo'];
+                var latLng = new google.maps.LatLng(lat, lng);
+                var marker = this.setMaker(category, title, latLng, info, pin, photo);
                 var $option = $("<option>").text(title).data('marker', marker);
                 this.$pointSelect.append($option);// data属性使いたいので1回ずつappend
             }
@@ -396,7 +387,7 @@
          * @param {Object} pin
          * @param {Object} photo
          * @return {google.maps.Marker} marker
-         */ 
+         */
         createMarker: function (map, category, title, latLng, info, pin, photo) {
             var options = {
                 map: map,
@@ -416,7 +407,7 @@
                 var path = this.pinDir + pin.name;
                 options.icon = new google.maps.MarkerImage(path, null, null, null, new google.maps.Size(pin.size.width, pin.size.height))
                 options.pin = pin;
-                options.iconOffsetHeight = - pin.size.height;
+                options.iconOffsetHeight = -pin.size.height;
             } else {
                 options.iconOffsetHeight = Map.Config.DEFAULT_ICON_OFFSET_HEIGHT;// デフォルトピン用
             }
@@ -434,7 +425,7 @@
          * @param {Object} pin
          * @param {Object} photo
          * @return {google.maps.Marker} marker
-         */ 
+         */
         setMaker: function (category, title, latLng, info, pin, photo) {
             var self = this;
             // マーカー追加
@@ -448,13 +439,6 @@
                     self.removeInfoWindow(marker);
                 }
             });
-            // マウスオーバー
-            google.maps.event.addListener(marker, 'mouseover', function (e) {
-                self.toolTipOn(marker.title);
-            });
-            google.maps.event.addListener(marker, 'mouseout', function (e) {
-                self.toolTipOff();
-            });
             this.markers.push(marker);
             return marker;
         },
@@ -463,21 +447,30 @@
          * @param {String} title
          * @return {Void}
          */
-        toolTipOn: function (title) {
-            this.$toolTip = $('<div id="ttip">').css("left", this.mouse.x + "px").css("top", this.mouse.y + "px").attr('title', title);
-            $('body').append(this.$toolTip);
-            this.$toolTip.tooltip('show');
+        toolTipsOff: function () {
+            var self = this;
+            this.eachMarkers(function (marker) {
+                if (marker.toolTip) {
+                    marker.toolTip.setMap(null);
+                    marker.toolTip = null;
+                }
+            });
         },
         /**
-         * ツールチップ非表示
+         * ツールチップ表示
+         * @param {String} title
          * @return {Void}
          */
-        toolTipOff: function () {
-            if (this.$toolTip) {
-                this.$toolTip.tooltip('hide');
-                this.$toolTip.remove();
-                this.$toolTip = null;
-            }
+        toolTipsToggle: function () {
+            var self = this;
+            this.eachMarkers(function (marker) {
+                if (marker.toolTip) {
+                    marker.toolTip.setMap(null);
+                    marker.toolTip = null;
+                } else {
+                    marker.toolTip = new Map.Tooltip(self.map, marker);
+                }
+            });
         },
         /**
          * マーカー処理
@@ -510,7 +503,7 @@
          */
         removeAllMarker: function () {
             var self = this;
-            this.eachMarkers(function(marker) {
+            this.eachMarkers(function (marker) {
                 self.removeInfoWindow(marker);
                 marker.setMap(null);
             });
@@ -546,7 +539,7 @@
          * マーカー最前面へ
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         bringToFront: function (marker) {
             var self = this;
             this.eachMarkers(function (marker, i, target) {
@@ -566,7 +559,7 @@
          * 情報ウインドウ作成
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         createInfoWindow: function (marker) {
             var self = this;
             this.removeInfoWindow(marker);
@@ -588,7 +581,7 @@
          * @param {String} path
          * @param {Number} zIndex
          * @return {Void}
-         */ 
+         */
         setInfoWindow: function (marker, path, zIndex) {
             var self = this;
             var content = '';
@@ -600,7 +593,7 @@
             content += marker.info;
             content += '</div>';
             if (path) {
-                content += '<div class="view-large" src="' + path + '" data-path="'+ path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
+                content += '<div class="view-large" src="' + path + '" data-path="' + path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
                 content += '<a href="javascript:void(0);" >大きいサイズで見る</a><br>';
                 content += '<img src="' + path + '">';
                 content += '</div>';
@@ -614,7 +607,7 @@
             });
             infoWindow.open(this.map);
             google.maps.event.addListenerOnce(infoWindow, 'closeclick', function (e) {
-                 self.removeInfoWindow(marker);
+                self.removeInfoWindow(marker);
             });
             marker.infoWindow = infoWindow;
         },
@@ -622,7 +615,7 @@
          * 情報ウインドウ削除
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         removeInfoWindow: function (marker) {
             if (marker.infoWindow) {
                 marker.infoWindow.close();
@@ -633,7 +626,7 @@
          * 情報ウインドウ削除
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         removeAllInfoWindow: function () {
             var self = this;
             this.eachMarkers(function (marker) {
@@ -645,10 +638,10 @@
         /**
          * 現在地追跡
          * @return {Void}
-         */ 
+         */
         watchCurrent: function () {
             var self = this;
-            this.watchCurrentPosition(function(center) {
+            this.watchCurrentPosition(function (center) {
                 if (!self.currentMarker) {
                     self.setCurrentMarker(center);
                 } else {
@@ -660,7 +653,7 @@
          * 現在地追跡
          * @param {Function} func
          * @return {Void}
-         */ 
+         */
         watchCurrentPosition: function (func) {
             var self = this;
             if (navigator.geolocation) {
@@ -686,8 +679,8 @@
          * 現在地表示
          * @param {google.maps.LatLng} latLng
          * @return {Void}
-         */ 
-        setCurrentMarker: function(latLng) {
+         */
+        setCurrentMarker: function (latLng) {
             // define our custom marker image
             var image = new google.maps.MarkerImage(
                 this.imageDir + 'bluedot.png',
@@ -709,7 +702,7 @@
         /**
          * モバイル判定
          * @return {Boolean}
-         */ 
+         */
         isMobile: function () {
             var userAgent = navigator.userAgent;
             if (userAgent.indexOf('iPhone') != -1 ||
@@ -722,4 +715,3 @@
         }
     }
 })(this);
-

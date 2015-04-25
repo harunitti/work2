@@ -32,7 +32,7 @@
         this.div = div;
 
         var panes = this.getPanes();
-        panes.floatPane.appendChild(div);
+        panes.markerLayer.appendChild(div);
     };
     /**
      * 描画

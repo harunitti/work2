@@ -49,7 +49,7 @@
         this.div.style.left = point.x + 'px';
         var y = point.y + this.marker.iconOffsetHeight;
         this.div.style.top = y + 'px';
-        $(this.div).tooltip({placement: 'auto'}).tooltip('show');
+        $(this.div).tooltip({placement: 'top'}).tooltip('show');
     };
     /**
      * 非表示

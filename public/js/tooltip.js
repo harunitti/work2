@@ -27,7 +27,6 @@
     Map.Tooltip.prototype.onAdd = function () {
         var div = document.createElement('div');
         div.style.position = "absolute";
-        div.className = 'ttip';
         div.title = this.marker.title;
         this.div = div;
 
@@ -40,12 +39,17 @@
      */
     Map.Tooltip.prototype.draw = function () {
         var latLng = this.marker.getPosition();
+        var map = this.getMap();
+        var bounds = map.getBounds();
+        if (!bounds.contains(latLng)) {
+            return;
+        }
         var overlayProjection = this.getProjection();
         var point = overlayProjection.fromLatLngToDivPixel(latLng);
         this.div.style.left = point.x + 'px';
         var y = point.y + this.marker.iconOffsetHeight;
         this.div.style.top = y + 'px';
-        $(this.div).tooltip('show');
+        $(this.div).tooltip({placement: 'auto'}).tooltip('show');
     };
     /**
      * 非表示

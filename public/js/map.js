@@ -136,7 +136,7 @@
             var options = this.getMapOptions(latLng);
             this.map = new google.maps.Map(this.mapDiv, options);
             google.maps.event.addListener(this.map, 'zoom_changed', function (e) {
-                self.toolTipsOff();
+                self.removeToolTips();
             });
         },
         /**
@@ -443,18 +443,25 @@
             return marker;
         },
         /**
-         * ツールチップ表示
-         * @param {String} title
+         * 全ツールチップ非表示
          * @return {Void}
          */
-        toolTipsOff: function () {
+        removeToolTips: function () {
             var self = this;
             this.eachMarkers(function (marker) {
-                if (marker.toolTip) {
-                    marker.toolTip.setMap(null);
-                    marker.toolTip = null;
-                }
+                self.removeToolTip(marker);
             });
+        },
+        /**
+         * ツールチップ非表示
+         * @param {google.maps.Marker} marker
+         * @return {Void}
+         */
+        removeToolTip: function (marker) {
+            if (marker.toolTip) {
+                marker.toolTip.setMap(null);
+                marker.toolTip = null;
+            }
         },
         /**
          * ツールチップ表示
@@ -505,6 +512,7 @@
             var self = this;
             this.eachMarkers(function (marker) {
                 self.removeInfoWindow(marker);
+                self.removeToolTip(marker);
                 marker.setMap(null);
             });
         },

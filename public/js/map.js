@@ -113,8 +113,9 @@
          * @return {Void}
          */
         initialize: function () {
-            this.mapDiv = document.getElementById('canvas');
-            this.mapDiv.style.width = this.mapDiv.style.height = '100%';
+            this.mapDiv = document.getElementById(Map.Config.MAP_ELEMENT_NAME);
+            this.mapDiv.style.width  = Map.Config.WIDTH;
+            this.mapDiv.style.height = Map.Config.HEIGHT;
             // map作成
             this.addMap();
             // mapイベント

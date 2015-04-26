@@ -27,6 +27,21 @@
          */ 
         LNG: 137.021867,
         /**
+         * マップエレメント
+         * @type {String}
+         */ 
+        MAP_ELEMENT_NAME: 'canvas',
+        /**
+         * 幅
+         * @type {String}
+         */ 
+        WIDTH: '100%',
+        /**
+         * 高さ
+         * @type {String}
+         */ 
+        HEIGHT: '100%',
+        /**
          * ズーム
          * @type {Number}
          */ 

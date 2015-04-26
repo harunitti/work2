@@ -27,8 +27,8 @@
     Map.Tooltip.prototype.onAdd = function () {
         var div = document.createElement('div');
         div.style.position = "absolute";
-        div.title = this.marker.title;
-        div.setAttribute('data-container', '.gm-style');
+        div.style.fontWeight = "bold";
+        div.innerHTML = this.marker.title;
         this.div = div;
         var panes = this.getPanes();
         panes.markerLayer.appendChild(div);
@@ -42,14 +42,15 @@
         var map = this.getMap();
         var bounds = map.getBounds();
         if (!bounds.contains(latLng)) {
+            this.hide();
             return;
         }
+        this.show();
         var overlayProjection = this.getProjection();
         var point = overlayProjection.fromLatLngToDivPixel(latLng);
-        this.div.style.left = point.x + 'px';
-        var y = point.y + this.marker.iconOffsetHeight;
+        this.div.style.left = (point.x + 10) + 'px';
+        var y = point.y + this.marker.iconOffsetHeight - 15;
         this.div.style.top = y + 'px';
-        $(this.div).tooltip({placement: 'top'}).tooltip('show');
     };
     /**
      * 非表示
@@ -58,7 +59,6 @@
     Map.Tooltip.prototype.hide = function () {
         if (this.div) {
             this.div.style.visibility = "hidden";
-            $(this.div).tooltip('hide');
         }
     };
     /**
@@ -68,7 +68,6 @@
     Map.Tooltip.prototype.show = function () {
         if (this.div) {
             this.div.style.visibility = "visible";
-            $(this.div).tooltip('show');
         }
     };
     /**
@@ -89,7 +88,6 @@
      * @return {Void}
      */
     Map.Tooltip.prototype.onRemove = function() {
-      $(this.div).tooltip('destroy');
       this.div.parentNode.removeChild(this.div);
       this.div = null;
     }

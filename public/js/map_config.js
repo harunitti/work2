@@ -55,7 +55,7 @@
          * 最大ズーム
          * @type {Number}
          */ 
-        MAX_ZOOM: 20,
+        MAX_ZOOM: 22,
         /**
          * 画像ディレクトリ
          * @type {String}

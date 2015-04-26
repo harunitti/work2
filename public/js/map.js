@@ -119,7 +119,7 @@
             // map作成
             this.addMap();
             // mapイベント
-            this.addMapEvents();
+            //this.addMapEvents();
             // navi作成
             this.addNavigation();
             // データ取得
@@ -136,7 +136,6 @@
          * @return {Void}
          */
         addMap: function () {
-            var self = this;
             // 初期中心地点
             var latLng = new google.maps.LatLng(this.lat, this.lng);// 緯度 経度
             // マップ作成
@@ -147,6 +146,7 @@
          * マップイベント
          * @return {Void}
          */
+        /* 
         addMapEvents: function () {
             var self = this;
             // 遅延処理
@@ -154,7 +154,7 @@
                 setTimeout(function () {
                     self.isMapChangeEnd = true;
                     self.changeMapEnd();
-                }, 1000);
+                }, 1200);
             };
             // ドラッグ開始
             google.maps.event.addListener(this.map, 'dragstart', function (e) {
@@ -173,6 +173,7 @@
                 delayFunc();
             });
         },
+        */
         /**
          * マップ変更後処理
          * @return {Void}
@@ -314,13 +315,6 @@
                 self.slideView();
             });
             this.$naviBtnGroup.append($slideShowBtn);
-            // ツールチップ
-            var $toolTipBtn = $('<button>').addClass('btn btn-default').prop('title', 'ツールチップ');
-            $toolTipBtn.append($('<span class="fui-eye" aria-hidden="true"></span>'));
-            $toolTipBtn.on('mousedown', function (){
-                self.toolTipsToggle($toolTipBtn);
-            });
-            this.$naviBtnGroup.append($toolTipBtn);
             // Infoボタン
             var $infoBtn = $('<button>').addClass('btn btn-primary').prop('title', 'Info');
             $infoBtn.append($('<span class="fui-info-circle" aria-hidden="true"></span>'));
@@ -358,16 +352,17 @@
             $('[name="category"]').on('change', function () {
                 var no = $('input[name="category"]:checked').val();
                 self.removeAllMarker();
-                self.removeAllInfoWindow();
                 self.markers = [];
                 self.setMapData(data[no].name, data[no].data);
                 self.$settingModal.modal('hide');
                 self.selectedInfo.scrollTop = 0;
                 // スライドショー機能設定
                 self.setSlideShowModal();
+                self.addToolTips();
             });
             // スライドショー機能設定
             this.setSlideShowModal();
+            this.addToolTips();
         },
         /**
          * スライドビュー
@@ -518,22 +513,6 @@
                     marker.toolTip = new Map.Tooltip(self.map, marker);
                 }
             });
-        },
-        /**
-         * ツールチップトグル
-         * @param {Object} btn
-         * @return {Void}
-         */
-        toolTipsToggle: function (btn) {
-            if (this.isToolTipOn) {
-                this.removeToolTips();
-                this.isToolTipOn = false;
-                btn.removeClass('active');
-            } else {
-                this.addToolTips();
-                this.isToolTipOn = true;
-                btn.addClass('active');
-            }
         },
         /**
          * マーカー処理

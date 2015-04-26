@@ -213,7 +213,7 @@
          */
         addNavigation: function () {
             var self = this;
-            this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed');
+            this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed').zIndex(1);
             this.$pointSelect = $('<select>');
             this.$pointSelect.addClass('form-control');
             this.$pointSelect.attr('id', 'pointSelect');

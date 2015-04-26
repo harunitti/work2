@@ -28,7 +28,7 @@
         var div = document.createElement('div');
         div.style.position = "absolute";
         div.title = this.marker.title;
-        //div.setAttribute('data-container', 'body');
+        div.setAttribute('data-container', '.gm-style');
         this.div = div;
         var panes = this.getPanes();
         panes.markerLayer.appendChild(div);

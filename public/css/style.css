@@ -40,6 +40,10 @@ div#canvas {
     cursor: pointer;
 }
 
+.tooltip {
+    z-index: 0;
+}
+
 /*
 Copyright (c) 2012 Steve Stedman
 Released under the MIT license

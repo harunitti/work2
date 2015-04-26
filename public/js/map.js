@@ -320,7 +320,7 @@
             var $toolTipBtn = $('<button>').addClass('btn btn-default').prop('title', 'ツールチップ');
             $toolTipBtn.append($('<span class="fui-eye" aria-hidden="true"></span>'));
             $toolTipBtn.on('mousedown', function (){
-                self.toolTipsToggle();
+                self.toolTipsToggle($toolTipBtn);
             });
             this.$naviBtnGroup.append($toolTipBtn);
             // Infoボタン
@@ -523,15 +523,18 @@
         },
         /**
          * ツールチップトグル
+         * @param {Object} btn
          * @return {Void}
          */
-        toolTipsToggle: function () {
+        toolTipsToggle: function (btn) {
             if (this.isToolTipOn) {
                 this.removeToolTips();
                 this.isToolTipOn = false;
+                btn.removeClass('active');
             } else {
                 this.addToolTips();
                 this.isToolTipOn = true;
+                btn.addClass('active');
             }
         },
         /**

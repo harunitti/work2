@@ -325,7 +325,6 @@
         },
         /**
          * スライドビュー
-         * @param {Array} data
          * @return {Void}
          */
         slideView: function () {
@@ -336,7 +335,6 @@
         },
         /**
          * カテゴリ設定
-         * @param {Array} data
          * @return {Void}
          */
         setSlideShowModal: function () {

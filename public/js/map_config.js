@@ -32,6 +32,16 @@
          */ 
         ZOOM: 17,
         /**
+         * 最小ズーム
+         * @type {Number}
+         */ 
+        MIN_ZOOM: 12,
+        /**
+         * 最大ズーム
+         * @type {Number}
+         */ 
+        MAX_ZOOM: 20,
+        /**
          * 画像ディレクトリ
          * @type {String}
          */

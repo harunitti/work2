@@ -23,11 +23,6 @@
          */
         lng: Map.Config.LNG,
         /**
-         * ズーム
-         * @type {Number}
-         */
-        zoom: Map.Config.ZOOM,
-        /**
          * マップ
          * @type {google.maps.Map}
          */
@@ -194,7 +189,9 @@
          */
         getMapOptions: function (latLng) {
             return {
-                zoom: this.zoom,
+                zoom: Map.Config.ZOOM,
+                minZoom: Map.Config.MIN_ZOOM,
+                maxZoom: Map.Config.MAX_ZOOM,
                 center: latLng,
                 disableDoubleClickZoom: true,
                 draggable: true,

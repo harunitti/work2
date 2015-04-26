@@ -37,6 +37,7 @@ div#canvas {
 .infoWin img {
     clear:both;
     width: 180px;
+    cursor: pointer;
 }
 
 /*

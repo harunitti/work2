@@ -48,8 +48,12 @@
         this.show();
         var overlayProjection = this.getProjection();
         var point = overlayProjection.fromLatLngToDivPixel(latLng);
-        this.div.style.left = (point.x + 10) + 'px';
+        var x = point.x;
         var y = point.y + this.marker.iconOffsetHeight - 15;
+        if (!this.marker.pin) {
+            x += 15;
+        }
+        this.div.style.left = x + 'px';
         this.div.style.top = y + 'px';
     };
     /**

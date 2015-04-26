@@ -119,7 +119,7 @@
             // map作成
             this.addMap();
             // mapイベント
-            //this.addMapEvents();
+            this.addMapEvents();
             // navi作成
             this.addNavigation();
             // データ取得
@@ -146,7 +146,6 @@
          * マップイベント
          * @return {Void}
          */
-        /* 
         addMapEvents: function () {
             var self = this;
             // 遅延処理
@@ -154,7 +153,7 @@
                 setTimeout(function () {
                     self.isMapChangeEnd = true;
                     self.changeMapEnd();
-                }, 1200);
+                }, 500);
             };
             // ドラッグ開始
             google.maps.event.addListener(this.map, 'dragstart', function (e) {
@@ -173,14 +172,13 @@
                 delayFunc();
             });
         },
-        */
         /**
          * マップ変更後処理
          * @return {Void}
          */
         changeMapEnd: function () {
             console.log('changeMapEnd', this.isMapChangeEnd, this.isToolTipOn);
-            if (this.isMapChangeEnd && this.isToolTipOn) {
+            if (this.isMapChangeEnd) {
                 this.addToolTips();
             }
         },

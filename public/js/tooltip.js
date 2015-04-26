@@ -28,8 +28,8 @@
         var div = document.createElement('div');
         div.style.position = "absolute";
         div.title = this.marker.title;
+        //div.setAttribute('data-container', 'body');
         this.div = div;
-
         var panes = this.getPanes();
         panes.markerLayer.appendChild(div);
     };

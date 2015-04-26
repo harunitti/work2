@@ -9,8 +9,7 @@
 
     var Map = global.Map || (global.Map = {});
 
-    Map.App = function App() {
-    };
+    Map.App = function App() {};
 
     Map.App.prototype = {
         /**
@@ -104,6 +103,16 @@
          */
         selectedInfo: {scrollTop: 0},
         /**
+         * ツールチップ表示
+         * @type {Boolean}
+         */
+        isToolTipOn: false,
+        /**
+         * マップ変更完了
+         * @type {Boolean}
+         */
+        isMapChangeEnd: true,
+        /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
@@ -113,6 +122,8 @@
             this.mapDiv.style.width = this.mapDiv.style.height = '100%';
             // map作成
             this.addMap();
+            // mapイベント
+            this.addMapEvents();
             // navi作成
             this.addNavigation();
             // データ取得
@@ -135,9 +146,46 @@
             // マップ作成
             var options = this.getMapOptions(latLng);
             this.map = new google.maps.Map(this.mapDiv, options);
-            google.maps.event.addListener(this.map, 'zoom_changed', function (e) {
+        },
+        /**
+         * マップイベント
+         * @return {Void}
+         */
+        addMapEvents: function () {
+            var self = this;
+            // 遅延処理
+            var delayFunc = function () {
+                setTimeout(function () {
+                    self.isMapChangeEnd = true;
+                    self.changeMapEnd();
+                }, 1000);
+            };
+            // ドラッグ開始
+            google.maps.event.addListener(this.map, 'dragstart', function (e) {
+                console.log('dragstart');
+                self.isMapChangeEnd = false;
                 self.removeToolTips();
             });
+            // ドラッグ完了
+            google.maps.event.addListener(this.map, 'dragend', function (e) {
+                delayFunc();
+            });
+            // ズーム変更
+            google.maps.event.addListener(this.map, 'zoom_changed', function (e) {
+                console.log('zoom_changed');
+                self.removeToolTips();
+                delayFunc();
+            });
+        },
+        /**
+         * マップ変更後処理
+         * @return {Void}
+         */
+        changeMapEnd: function () {
+            console.log('changeMapEnd', this.isMapChangeEnd, this.isToolTipOn);
+            if (this.isMapChangeEnd && this.isToolTipOn) {
+                this.addToolTips();
+            }
         },
         /**
          * マップオブション取得
@@ -463,19 +511,28 @@
         },
         /**
          * ツールチップ表示
-         * @param {String} title
          * @return {Void}
          */
-        toolTipsToggle: function () {
+        addToolTips: function () {
             var self = this;
             this.eachMarkers(function (marker) {
-                if (marker.toolTip) {
-                    marker.toolTip.setMap(null);
-                    marker.toolTip = null;
-                } else {
+                if (!marker.toolTip) {
                     marker.toolTip = new Map.Tooltip(self.map, marker);
                 }
             });
+        },
+        /**
+         * ツールチップトグル
+         * @return {Void}
+         */
+        toolTipsToggle: function () {
+            if (this.isToolTipOn) {
+                this.removeToolTips();
+                this.isToolTipOn = false;
+            } else {
+                this.addToolTips();
+                this.isToolTipOn = true;
+            }
         },
         /**
          * マーカー処理

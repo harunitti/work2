@@ -237,7 +237,7 @@
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "/data/map_data.json",
+                url: Map.Config.MAP_DATA_URL,
                 success: function (data) {
                     self.setNavigation(data)
                 }

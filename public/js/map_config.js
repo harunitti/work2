@@ -72,6 +72,11 @@
          */
         PHOTO_DIR: IMAGE_DIR + 'photo/',
         /**
+         * マップデータURL
+         * @type {String}
+         */
+        MAP_DATA_URL: "/data/map_data.json",
+        /**
          * 標準マーカーの情報ウインドウオフセット位置pixel
          * @type {Number}
          */

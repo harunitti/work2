@@ -562,6 +562,8 @@
             var latLng = marker.getPosition();
             google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
                 self.popupMarker(marker);
+                self.removeToolTips();
+                self.addToolTips();
             });
             this.map.panTo(latLng);
         },

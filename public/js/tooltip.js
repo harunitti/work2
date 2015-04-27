@@ -37,7 +37,7 @@
         var div = document.createElement('div');
         div.style.position = "absolute";
         div.style.fontWeight = "bold";
-        div.style.minWidth = '100px';
+        div.style.minWidth = '120px';
         div.innerHTML = this.marker.title;
         this.div = div;
         var panes = this.getPanes();

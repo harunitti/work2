@@ -155,9 +155,15 @@
                     self.changeMapEnd();
                 }, 500);
             };
+            // ドラッグ完了
+            google.maps.event.addListener(this.map, 'dragend', function (e) {
+                self.isMapChangeEnd = false;
+                self.removeToolTips();
+                delayFunc();
+            });
             // ズーム変更
             google.maps.event.addListener(this.map, 'zoom_changed', function (e) {
-                console.log('zoom_changed', self.map.getZoom());
+                self.isMapChangeEnd = false;
                 self.removeToolTips();
                 delayFunc();
             });

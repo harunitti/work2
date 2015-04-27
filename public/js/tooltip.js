@@ -21,6 +21,15 @@
      */
     Map.Tooltip.prototype = new google.maps.OverlayView();
     /**
+     * 最小表示ズーム
+     */
+    Map.Tooltip.prototype.SHOW_MIN_ZOOM = 18;
+    /**
+     * オフセット
+     */
+    Map.Tooltip.prototype.OFFSET_X = 15;
+    Map.Tooltip.prototype.OFFSET_Y = -15;
+    /**
      * 追加
      * @return {Void}
      */
@@ -28,6 +37,7 @@
         var div = document.createElement('div');
         div.style.position = "absolute";
         div.style.fontWeight = "bold";
+        div.style.minWidth = '100px';
         div.innerHTML = this.marker.title;
         this.div = div;
         var panes = this.getPanes();
@@ -38,8 +48,12 @@
      * @return {Void}
      */
     Map.Tooltip.prototype.draw = function () {
-        var latLng = this.marker.getPosition();
         var map = this.getMap();
+        if (map.getZoom() < this.SHOW_MIN_ZOOM) {
+            this.hide();
+            return;
+        }
+        var latLng = this.marker.getPosition();
         var bounds = map.getBounds();
         if (!bounds.contains(latLng)) {
             this.hide();
@@ -49,9 +63,9 @@
         var overlayProjection = this.getProjection();
         var point = overlayProjection.fromLatLngToDivPixel(latLng);
         var x = point.x;
-        var y = point.y + this.marker.iconOffsetHeight - 15;
+        var y = point.y + this.marker.iconOffsetHeight + this.OFFSET_Y;
         if (!this.marker.pin) {
-            x += 15;
+            x += this.OFFSET_X;
         }
         this.div.style.left = x + 'px';
         this.div.style.top = y + 'px';

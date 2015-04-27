@@ -104,25 +104,26 @@ CSVを設置する。
 shizen_kojyo_map.csv    rekishi_kojyo_map.csv
 ~~~
 
-## 2. make_map_data.php編集
+## 2. make_map_data.rb編集
 
-make_map_data.phpはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
+make_map_data.rbはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
 
-make_map_data.phpの下部でカテゴリ名と対応するCSVを記述してください。
-
-~~~
-$data = new MakeMapData;
-$data->addCategory("歴史", "rekishi_kojyo_map.csv");
-$data->addCategory("自然", "shizen_kojyo_map.csv");
-$data->make();
-~~~
-
-## 3. make_map_data.php実行
-
-make_map_data.phpを実行すると同階層にmap_data.jsonが作成されます。
+make_map_data.rbの下部でカテゴリ名と対応するCSVを記述してください。
 
 ~~~
-% php make_map_data.php
+data = MakeMapData.new
+data.add('歴史', 'rekishi_kojyo_map.csv')
+data.add('自然', 'shizen_kojyo_map.csv')
+data.add('銅像', 'bronze_kojyo_map.csv')
+data.make()
+~~~
+
+## 3. make_map_data.rb実行
+
+make_map_data.rbを実行すると同階層にmap_data.jsonが作成されます。
+
+~~~
+% ruby make_map_data.rb
 % ls
 map_data.json
 ~~~

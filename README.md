@@ -120,6 +120,8 @@ data.make()
 
 ## 3. make_map_data.rb実行
 
+画像サイズを取得しているのでローカルで実行する場合はローカル環境にも画像を設置してください。
+
 make_map_data.rbを実行すると同階層にmap_data.jsonが作成されます。
 
 ~~~

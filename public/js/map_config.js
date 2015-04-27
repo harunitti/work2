@@ -45,7 +45,7 @@
          * ズーム
          * @type {Number}
          */ 
-        ZOOM: 17,
+        ZOOM: 18,
         /**
          * 最小ズーム
          * @type {Number}

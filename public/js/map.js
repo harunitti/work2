@@ -344,16 +344,23 @@
             $(':radio').radiocheck();
             // カテゴリ選択
             $('[name="category"]').on('change', function () {
-                var no = $('input[name="category"]:checked').val();
-                self.removeAllMarker();
-                self.markers = [];
-                self.setMapData(data[no].name, data[no].data);
-                self.$settingModal.modal('hide');
-                self.selectedInfo.scrollTop = 0;
-                // スライドショー機能設定
-                self.setSlideShowModal();
-                self.addToolTips();
+                self.selectCategory();
             });
+            // スライドショー機能設定
+            this.setSlideShowModal();
+            this.addToolTips();
+        },
+        /**
+         * カテゴリ選択処理
+         * @return {Void}
+         */
+        selectCategory: function () {
+            var no = $('input[name="category"]:checked').val();
+            this.removeAllMarker();
+            this.markers = [];
+            this.setMapData(data[no].name, data[no].data);
+            this.$settingModal.modal('hide');
+            this.selectedInfo.scrollTop = 0;
             // スライドショー機能設定
             this.setSlideShowModal();
             this.addToolTips();

@@ -358,7 +358,7 @@
             var no = $('input[name="category"]:checked').val();
             this.removeAllMarker();
             this.markers = [];
-            this.setMapData(data[no].name, data[no].data);
+            this.setMapData(this.data[no].name, this.data[no].data);
             this.$settingModal.modal('hide');
             this.selectedInfo.scrollTop = 0;
             // スライドショー機能設定

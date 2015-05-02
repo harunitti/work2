@@ -108,6 +108,11 @@
          */
         isMapChangeEnd: true,
         /**
+         * 一覧画面が表示されているか
+         * @type {Boolean}
+         */
+        isListOn: false,
+        /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
@@ -145,6 +150,7 @@
         /**
          * マップイベント
          * @return {Void}
+         * TODO: ドラッグ完了の時は消さなくていいものは消さず、新たに表示するものだけ表示するようにする
          */
         addMapEvents: function () {
             var self = this;
@@ -208,19 +214,21 @@
          */
         addNavigation: function () {
             var self = this;
-            this.$navi = $('<navi>').addClass('navbar navbar-inverse navbar-embossed').zIndex(1);
-            this.$pointSelect = $('<select>');
-            this.$pointSelect.addClass('form-control');
-            this.$pointSelect.attr('id', 'pointSelect');
-            this.$pointSelect.on('change', function () {
-                var marker = $('#pointSelect option:selected').data('marker');
-                if (marker) {
-                    self.removeAllInfoWindow();
-                    self.locationMarker(marker);
-                }
-            });
+            this.$navi = $('<div>').addClass('btn-toolbar').css('margin-bottom', '20px');
             this.$naviBtnGroup = $('<div>').addClass('btn-group');
-            this.$navi.append(this.$pointSelect);
+            if (!this.isSmallMobile()) {
+                this.$pointSelect = $('<select>');
+                this.$pointSelect.addClass('form-control');
+                this.$pointSelect.attr('id', 'pointSelect');
+                this.$pointSelect.on('change', function () {
+                    var marker = $('#pointSelect option:selected').data('marker');
+                    if (marker) {
+                        self.removeAllInfoWindow();
+                        self.locationMarker(marker);
+                    }
+                });
+                this.$navi.append(this.$pointSelect);
+            }
             this.$navi.append(this.$naviBtnGroup);
         },
         /**
@@ -256,7 +264,18 @@
                     self.$photoModal.modal();
                 }
             });
+            $(document).on('mousedown', '.closeInfoWin', function (e) {
+                var title = $(this).data('title');
+                self.eachMarkers(function(marker) {
+                    if (marker.title == title) {
+                        self.removeInfoWindow(marker);
+                    }
+                });
+            });
+            
+            
             // スライドショーの画像選択
+            /*
             $(document).on('mousedown', '.slide-photo', function () {
                 var marker = $(this).data('marker');
                 if (marker) {
@@ -266,6 +285,7 @@
                 self.selectedInfo.scrollTop = self.$slideModal.scrollTop();
                 self.$slideModal.modal('hide');
             });
+            */
         },
         /**
          * ナビゲーション設定
@@ -292,21 +312,21 @@
          */
         setNavigationButton: function () {
             var self = this;
-            // タイトル
-            this.$titleBtn = $("<button>").addClass("btn btn-inverse category").css('font-size', '0.8em');
-            this.$naviBtnGroup.append(this.$titleBtn);
             // 設定ボタン
-            var $settingBtn = $('<button>').addClass('btn btn-warning').prop('title', '設定');
+            var $settingBtn = $('<button>').addClass('btn btn-inverse').prop('title', '設定');
             $settingBtn.append($('<span class="fui-gear" aria-hidden="true"></span>'));
             $settingBtn.on('mousedown', function () {
                 self.$settingModal.modal();
             });
+            this.$titleBtn = $("<span>").addClass("category");
+            $settingBtn.append(this.$titleBtn);
             this.$naviBtnGroup.append($settingBtn);
             // 写真一覧ボタン
             var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');
             $slideShowBtn.append($('<span class="fui-image" aria-hidden="true"></span>'));
             $slideShowBtn.on('mousedown', function () {
-                self.slideView();
+                self.slideView(self.selectedInfo.scrollTop);
+                self.isListOn = true;
             });
             this.$naviBtnGroup.append($slideShowBtn);
             // Infoボタン
@@ -347,8 +367,16 @@
                 self.selectCategory();
             });
             // スライドショー機能設定
-            this.setSlideShowModal();
+            this.setSlideShowModal(this.data[0].name);
             this.addToolTips();
+            this.$slideModal.find('.gotoTop').on('mousedown', function() {
+                self.slideView(0);
+                self.selectedInfo.scrollTop = 0;
+            });
+            this.$photoModal.find('.gotoList').on('mousedown', function() {
+                self.$photoModal.modal('hide');
+                self.slideView(self.selectedInfo.scrollTop);
+            });
         },
         /**
          * カテゴリ選択処理
@@ -362,38 +390,84 @@
             this.$settingModal.modal('hide');
             this.selectedInfo.scrollTop = 0;
             // スライドショー機能設定
-            this.setSlideShowModal();
+            this.setSlideShowModal(this.data[no].name);
             this.addToolTips();
         },
         /**
          * スライドビュー
+         * @param {Number} scroll
          * @return {Void}
          */
-        slideView: function () {
+        slideView: function (scroll) {
             this.$slideModal.animate({
-                scrollTop: this.selectedInfo.scrollTop
+                scrollTop: scroll
             }, "fast", "swing");
             this.$slideModal.modal();
         },
         /**
          * カテゴリ設定
+         * @param {String} title
          * @return {Void}
          */
-        setSlideShowModal: function () {
+        setSlideShowModal: function (title) {
             var self = this;
-            this.$slideModal.find('#slideList').html('');
+            var content = this.$slideModal.find('#slideList');
+            content.html('');
+            this.$slideModal.find('.modal-title').text('「' + title + '」写真一覧');
             this.eachMarkers(function (marker) {
                 if (!marker.photo.name) {
                     return;
                 }
                 var path = self.photoDir + marker.photo.name;
+                
+                var $titleDiv = $('<div>').text(marker.title);
+                content.append($titleDiv);
                 var $img = $('<img>').prop('src', path)
-                    .addClass('slide-photo img-responsive img-thumbnail')
-                    .data('marker', marker)
-                    .css('cursor', 'pointer')
+                    .addClass('img-responsive img-thumbnail')
                     .prop('title', marker.title);
-                self.$slideModal.find('#slideList').append($img);
+                content.append($img);
+                var $controlWrap = $('<div>').addClass('slidePhotoMenu');
+                var $pointBtn = $('<button>').addClass('btn btn-success').text('場所を見る').data('marker', marker);
+                $pointBtn.on('mousedown', function() {
+                    var marker = $(this).data('marker');
+                    self.selectPhotoPoint(marker);
+                });
+                $controlWrap.append($pointBtn);
+                var $largeBtn = $('<button>').addClass('btn btn-info').css('margin-left', '5px').text('詳細').data('marker', marker);
+                $largeBtn.data('path', self.photoDir + marker.photo.name).data('title', marker.title).data('info', marker.info)
+                $largeBtn.on('mousedown', function() {
+                    self.$slideModal.modal('hide');
+                    
+                    var path = $(this).data('path');
+                    var title = $(this).data('title');
+                    var info = $(this).data('info');
+                    if (path) {
+                        self.$photoModal.find('.modal-title').text(title);
+                        self.$photoModal.find('.large-photo').prop('src', path);
+                        self.$photoModal.find('.info').html(info);
+                        self.$photoModal.modal();
+                    }
+                });
+                $controlWrap.append($largeBtn);
+
+                content.append($controlWrap);
             });
+        },
+        /**
+         * 写真選択
+         * @param {Object} marker
+         * @return {Void}
+         */
+        selectPhotoPoint: function (marker) {
+            if (this.isSmallMobile()) {
+                this.map.setZoom(16);
+            }
+            if (marker) {
+                this.removeAllInfoWindow();
+                this.locationMarker(marker);
+            }
+            this.selectedInfo.scrollTop = this.$slideModal.scrollTop();
+            this.$slideModal.modal('hide');
         },
         /**
          * マップデータ反映
@@ -403,7 +477,9 @@
          */
         setMapData: function (category, data) {
             this.$titleBtn.text(category);
-            this.$pointSelect.html('').append($('<option>').text('メニュー'));
+            if (this.$pointSelect) {
+                this.$pointSelect.html('').append($('<option>').text('メニュー'));
+            }
             for (var i = 0; i < data.length; i++) {
                 var title = data[i]['title'];
                 var lat = data[i]['lat'];
@@ -413,8 +489,10 @@
                 var photo = data[i]['photo'];
                 var latLng = new google.maps.LatLng(lat, lng);
                 var marker = this.setMaker(category, title, latLng, info, pin, photo);
-                var $option = $("<option>").text(title).data('marker', marker);
-                this.$pointSelect.append($option);// data属性使いたいので1回ずつappend
+                if (this.$pointSelect) {
+                    var $option = $("<option>").text(title).data('marker', marker);
+                    this.$pointSelect.append($option);// data属性使いたいので1回ずつappend
+                }
             }
         },
         /**
@@ -560,12 +638,12 @@
         locationMarker: function (marker) {
             var self = this;
             var latLng = marker.getPosition();
-            google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
+            //google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
                 self.popupMarker(marker);
                 self.removeToolTips();
                 self.addToolTips();
-            });
-            this.map.panTo(latLng);
+           // });
+            //this.map.panTo(latLng);
         },
         /**
          * 指定マーカージャンプ
@@ -577,9 +655,9 @@
             marker.setAnimation(google.maps.Animation.BOUNCE);
             window.setTimeout(function () {
                 marker.setAnimation(null);
-                self.createInfoWindow(marker);
-                self.bringToFront(marker);
-            }, 1500);
+                //self.createInfoWindow(marker);
+                //self.bringToFront(marker);
+            }, 10000);
         },
         /**
          * マーカー最前面へ
@@ -633,15 +711,17 @@
             var content = '';
             content += '<div class="infoWin">';
             content += '<div><strong>';
-            content += marker.title;
+            content += marker.title + " debug:" + this.map.getZoom();
             content += '</strong></div>';
-            content += '<div>';
-            content += marker.info;
-            content += '</div>';
             if (path) {
-                content += '<div class="view-large" src="' + path + '" data-path="' + path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
-                content += '<a href="javascript:void(0);" >大きいサイズで見る</a><br>';
+                content += '<div style="display: table;">'
+                content += '<div style="float:left; display: table-cell; width:180px; margin:0px; padding:0px;" class="view-large" src="' + path + '" data-path="' + path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
+                content += '<a href="javascript:void(0);" >詳細を見る</a><br>';
                 content += '<img src="' + path + '">';
+                content += '</div>';
+                content += '<div style="display:table-cell; vertical-align:middle;">';
+                content += '<a style="margin-left:5px;" href="javascript:void(0);" class="closeInfoWin btn btn-default btn-sm" data-title="' + marker.title + '">閉じる</a>';
+                content += '</div>';
                 content += '</div>';
             }
             content += '</div>';
@@ -744,6 +824,18 @@
                 visible: true
             };
             this.currentMarker = new google.maps.Marker(options);
+        },
+        /**
+         * モバイル判定
+         * @return {Boolean}
+         */
+        isSmallMobile: function () {
+            var userAgent = navigator.userAgent;
+            if (userAgent.indexOf('iPhone') != -1 ||
+                userAgent.indexOf('iPod') != -1) {
+                return true;
+            }
+            return false;
         },
         /**
          * モバイル判定

@@ -28,7 +28,7 @@ div#canvas {
 }
 
 .infoWin {
-    width: 250px;
+    width: 270px;
     height: 100%;
     min-height: 50px;
     padding-right:30px;
@@ -40,8 +40,8 @@ div#canvas {
     cursor: pointer;
 }
 
-.tooltip {
-    z-index: 0;
+.slidePhotoMenu {
+    margin: 5px 0px 15px 0px;
 }
 
 /*

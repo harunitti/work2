@@ -38,7 +38,7 @@
                 </div>
             </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
           </div>
         </div>
     </div>
@@ -65,10 +65,27 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
             </div>
         </div>
     </div>
+</div>
+<!-- Slideshow modal -->
+<div id="slideshowModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">一覧</h4>
+        </div>
+      <div id="slideList" class="text-center"></div>
+      <div class="modal-footer">
+          <button type="button" class="gotoTop btn btn-warning">一番上へ</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- Large Photo modal -->
 <div id="largePhotoModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
@@ -84,17 +101,10 @@
               <p class="info"></p>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="gotoList btn btn-danger">一覧</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
           </div>
       </div>
-  </div>
-</div>
-<!-- Slideshow modal -->
-<div id="slideshowModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div id="slideList" class="text-center"></div>
-    </div>
   </div>
 </div>
 <script type="text/javascript" src="lib/jquery-2.1.3.min.js"></script>

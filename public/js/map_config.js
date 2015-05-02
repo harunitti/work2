@@ -50,12 +50,12 @@
          * 最小ズーム
          * @type {Number}
          */ 
-        MIN_ZOOM: 12,
+        MIN_ZOOM: 14,
         /**
          * 最大ズーム
          * @type {Number}
          */ 
-        MAX_ZOOM: 22,
+        MAX_ZOOM: 20,
         /**
          * 画像ディレクトリ
          * @type {String}

@@ -283,6 +283,19 @@
             // ボタン配置
             this.setNavigationButton();
             this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
+            
+            var $zoonInBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'ズームイン').css('margin', '20px');
+            $zoonInBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
+            $zoonInBtn.on('mousedown', function () {
+                var zoom = self.map.getZoom() + 1;
+                if (Map.Config.MAX_ZOOM <= zoom) {
+                    zoom = Map.Config.ZOOM;
+                }
+                self.map.setZoom(zoom);
+            });
+            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($zoonInBtn[0]);
+
+            
             // 初期表示設定
             this.setMapData(data[0].name, data[0].data);
             // カテゴリー機能設定

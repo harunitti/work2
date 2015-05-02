@@ -294,6 +294,16 @@
                 self.map.setZoom(zoom);
             });
             this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($zoonInBtn[0]);
+            
+            var $upBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'アップボタン').css('margin', '20px');
+            $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
+            $upBtn.on('mousedown', function () {
+                self.map.panBy(0, 30);
+            });
+            this.map.controls[google.maps.ControlPosition.TOP_CENTER].push($upBtn[0]);
+            
+            
+            
 
             
             // 初期表示設定

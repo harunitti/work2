@@ -443,6 +443,7 @@
         selectPhotoPoint: function (marker) {
             if (this.isSmallMobile()) {
                 this.map.setZoom(16);
+                this.map.setCenter({lat:this.lat, lng:this.lng});
             }
             if (marker) {
                 this.removeAllInfoWindow();

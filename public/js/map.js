@@ -83,11 +83,6 @@
          */
         $naviBtnGroup: null,
         /**
-         * 地点セレクト
-         * @type {Object}
-         */
-        $pointSelect: null,
-        /**
          * データ
          * @type {Array}
          */
@@ -216,19 +211,6 @@
             var self = this;
             this.$navi = $('<div>').addClass('btn-toolbar').css('margin-bottom', '20px');
             this.$naviBtnGroup = $('<div>').addClass('btn-group');
-            if (!this.isSmallMobile()) {
-                this.$pointSelect = $('<select>');
-                this.$pointSelect.addClass('form-control');
-                this.$pointSelect.attr('id', 'pointSelect');
-                this.$pointSelect.on('change', function () {
-                    var marker = $('#pointSelect option:selected').data('marker');
-                    if (marker) {
-                        self.removeAllInfoWindow();
-                        self.locationMarker(marker);
-                    }
-                });
-                this.$navi.append(this.$pointSelect);
-            }
             this.$navi.append(this.$naviBtnGroup);
         },
         /**
@@ -477,9 +459,6 @@
          */
         setMapData: function (category, data) {
             this.$titleBtn.text(category);
-            if (this.$pointSelect) {
-                this.$pointSelect.html('').append($('<option>').text('メニュー'));
-            }
             for (var i = 0; i < data.length; i++) {
                 var title = data[i]['title'];
                 var lat = data[i]['lat'];
@@ -489,10 +468,6 @@
                 var photo = data[i]['photo'];
                 var latLng = new google.maps.LatLng(lat, lng);
                 var marker = this.setMaker(category, title, latLng, info, pin, photo);
-                if (this.$pointSelect) {
-                    var $option = $("<option>").text(title).data('marker', marker);
-                    this.$pointSelect.append($option);// data属性使いたいので1回ずつappend
-                }
             }
         },
         /**

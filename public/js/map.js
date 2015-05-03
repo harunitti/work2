@@ -88,10 +88,15 @@
          */
         data: [],
         /**
-         * 選択中の情報
+         * スクロール位置記録
          * @type {Object}
          */
         selectedScrollTop: 0,
+        /**
+         * スクロール位置記録
+         * @type {Object}
+         */
+        selectedMarker: null,
         /**
          * ツールチップ表示
          * @type {Boolean}
@@ -297,6 +302,13 @@
                     zoom = Map.Config.ZOOM;
                 }
                 self.map.setZoom(zoom);
+                if (self.selectedMarker) {
+                    var position = self.selectedMarker.getPosition();
+                    self.map.setCenter(position);
+                    if (self.selectedMarker.infoWindow) {
+                        self.createInfoWindow(self.selectedMarker);
+                    }
+                }
             });
             var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', 'アップボタン');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
@@ -471,10 +483,11 @@
                     .prop('title', marker.title);
                 content.append($img);
                 var $controlWrap = $('<div>').addClass('slidePhotoMenu');
-                var $pointBtn = $('<button>').addClass('btn btn-success').text('場所を見る').data('marker', marker);
+                var $pointBtn = $('<button>').addClass('btn btn-success').text('位置を見る').data('marker', marker);
                 $pointBtn.on('mousedown', function() {
                     var marker = $(this).data('marker');
                     self.selectPhotoPoint(marker);
+                    self.selectedMarker = marker;
                 });
                 $controlWrap.append($pointBtn);
                 var $largeBtn = $('<button>').addClass('btn btn-info').css('margin-left', '5px').text('詳細').data('marker', marker);
@@ -594,6 +607,7 @@
                 } else {
                     self.removeInfoWindow(marker);
                 }
+                self.selectedMarker = marker;
             });
             this.markers.push(marker);
             return marker;

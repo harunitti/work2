@@ -294,14 +294,17 @@
             var $naviBtnGroup = $('<div>').addClass('btn-group');
             $navi.append($naviBtnGroup);
             // ズーム
-            var $zoonBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'ズームイン');
-            $zoonBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
+            var $zoonBtn = $('<button>').addClass('btn btn-inverse').text(this.map.getZoom());
+            //$zoonBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
             $zoonBtn.on('mousedown', function () {
-                var zoom = self.map.getZoom() + 1;
+                var zoom = self.map.getZoom();
                 if (Map.Config.MAX_ZOOM <= zoom) {
                     zoom = Map.Config.ZOOM;
+                } else {
+                    ++ zoom;
                 }
                 self.map.setZoom(zoom);
+                $zoonBtn.text(self.map.getZoom());
                 if (self.selectedMarker) {
                     var position = self.selectedMarker.getPosition();
                     self.map.setCenter(position);

@@ -91,7 +91,7 @@
          * 選択中の情報
          * @type {Object}
          */
-        selectedInfo: {scrollTop: 0},
+        selectedScrollTop: 0,
         /**
          * ツールチップ表示
          * @type {Boolean}
@@ -274,7 +274,7 @@
                     self.removeAllInfoWindow();
                     self.locationMarker(marker);
                 }
-                self.selectedInfo.scrollTop = self.$slideModal.scrollTop();
+                self.selectedScrollTop = self.$slideModal.scrollTop();
                 self.$slideModal.modal('hide');
             });
             */
@@ -369,7 +369,7 @@
             var $slideShowBtn = $('<button>').addClass('btn btn-danger').prop('title', '写真一覧');
             $slideShowBtn.append($('<span class="fui-image" aria-hidden="true"></span>'));
             $slideShowBtn.on('mousedown', function () {
-                self.slideView(self.selectedInfo.scrollTop);
+                self.slideView(self.selectedScrollTop);
                 self.isListOn = true;
             });
             this.$naviBtnGroup.append($slideShowBtn);
@@ -415,11 +415,11 @@
             this.addToolTips();
             this.$slideModal.find('.gotoTop').on('mousedown', function() {
                 self.slideView(0);
-                self.selectedInfo.scrollTop = 0;
+                self.selectedScrollTop = 0;
             });
             this.$photoModal.find('.gotoList').on('mousedown', function() {
                 self.$photoModal.modal('hide');
-                self.slideView(self.selectedInfo.scrollTop);
+                self.slideView(self.selectedScrollTop);
             });
         },
         /**
@@ -432,7 +432,7 @@
             this.markers = [];
             this.setMapData(this.data[no].name, this.data[no].data);
             this.$settingModal.modal('hide');
-            this.selectedInfo.scrollTop = 0;
+            this.selectedScrollTop = 0;
             // スライドショー機能設定
             this.setSlideShowModal(this.data[no].name);
             this.addToolTips();
@@ -511,7 +511,7 @@
                 this.removeAllInfoWindow();
                 this.locationMarker(marker);
             }
-            this.selectedInfo.scrollTop = this.$slideModal.scrollTop();
+            this.selectedScrollTop = this.$slideModal.scrollTop();
             this.$slideModal.modal('hide');
         },
         /**

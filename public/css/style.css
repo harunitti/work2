@@ -44,6 +44,20 @@ div#canvas {
     margin: 5px 0px 15px 0px;
 }
 
+div.cross {
+    margin: 20px;
+    display: table;
+    width: 141px;
+}
+
+button.cross-cell {
+    display: table-cell;
+}
+
+button.cross-top, button.cross-bottom {
+    margin: 0px 47px;
+}
+
 /*
 Copyright (c) 2012 Steve Stedman
 Released under the MIT license

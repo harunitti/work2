@@ -285,7 +285,7 @@
             this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
             
             var $zoonInBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'ズームイン').css('margin', '20px');
-            $zoonInBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
+            $zoonInBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
             $zoonInBtn.on('mousedown', function () {
                 var zoom = self.map.getZoom() + 1;
                 if (Map.Config.MAX_ZOOM <= zoom) {
@@ -295,12 +295,43 @@
             });
             this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($zoonInBtn[0]);
             
-            var $upBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'アップボタン').css('margin', '20px');
+            var $div = $('<div>').addClass('cross');
+            
+            var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell cross-top').prop('title', 'アップボタン');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
             $upBtn.on('mousedown', function () {
-                self.map.panBy(0, 30);
+                self.map.panBy(0, -50);
             });
-            this.map.controls[google.maps.ControlPosition.TOP_CENTER].push($upBtn[0]);
+
+            var $leftBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', '左ボタン');
+            $leftBtn.append($('<span class="fui-triangle-left-large" aria-hidden="true"></span>'));
+            $leftBtn.on('mousedown', function () {
+                self.map.panBy(-50, 0);
+            });
+            var $centerBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', 'センターボタン');
+            $centerBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
+            $centerBtn.on('mousedown', function () {
+                self.map.setCenter({lat: self.lat, lng: self.lng});
+            });
+            var $rightBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', '右ボタン');
+            $rightBtn.append($('<span class="fui-triangle-right-large" aria-hidden="true"></span>'));
+            $rightBtn.on('mousedown', function () {
+                self.map.panBy(50, 0);
+            });
+            var $downBtn = $('<button>').addClass('btn btn-inverse cross-cell  cross-bottom').prop('title', 'ダウンボタン');
+            $downBtn.append($('<span class="fui-triangle-down" aria-hidden="true"></span>'));
+            $downBtn.on('mousedown', function () {
+                self.map.panBy(0, 50);
+            });
+
+            $div.append($upBtn);
+            $div.append($leftBtn);
+            $div.append($centerBtn);
+            $div.append($rightBtn);
+            $div.append($downBtn);
+
+
+            this.map.controls[google.maps.ControlPosition.TOP_CENTER].push($div[0]);
             
             
             

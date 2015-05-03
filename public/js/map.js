@@ -126,8 +126,14 @@
             this.getMapData();
             // イベント
             this.addDomEvents();
-            // モバイルは現在地追跡
+            // iPhone
+            if (this.isSmallMobile()) {
+                // コントロール
+                this.setMobileControal();
+            }
+            // モバイル
             if (this.isMobile()) {
+                // 現在地追跡
                 this.watchCurrent();
             }
         },
@@ -185,7 +191,7 @@
          * @return {Object} options
          */
         getMapOptions: function (latLng) {
-            return {
+            var options = {
                 zoom: Map.Config.ZOOM,
                 minZoom: Map.Config.MIN_ZOOM,
                 maxZoom: Map.Config.MAX_ZOOM,
@@ -195,13 +201,17 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoomControl: false,
                 streetViewControl: false,
-                mapTypeControl: true,
+                mapTypeControl: false,
                 mapTypeControlOptions: {
                     style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
                     position: google.maps.ControlPosition.TOP_RIGHT
                 },
                 panControl: false
+            };
+            if (this.isSmallMobile()) {
+                options.draggable = false;
             }
+            return options;
         },
         /**
          * ナビ作成
@@ -270,43 +280,33 @@
             */
         },
         /**
-         * ナビゲーション設定
-         * @param {google.maps.LatLng} data
+         * コントロール設定
          * @return {Void}
          */
-        setNavigation: function (data) {
-            if (!data.length) {
-                return;
-            }
+        setMobileControal: function() {
             var self = this;
-            this.data = data;
-            // ボタン配置
-            this.setNavigationButton();
-            this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(self.$navi[0]);
-            
-            var $zoonInBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'ズームイン').css('margin', '20px');
-            $zoonInBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
-            $zoonInBtn.on('mousedown', function () {
+            var $navi = $('<div>').addClass('btn-toolbar').css('margin-top', '5px').css('margin-left', '10px');
+            var $naviBtnGroup = $('<div>').addClass('btn-group');
+            $navi.append($naviBtnGroup);
+            // ズーム
+            var $zoonBtn = $('<button>').addClass('btn btn-inverse').prop('title', 'ズームイン');
+            $zoonBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
+            $zoonBtn.on('mousedown', function () {
                 var zoom = self.map.getZoom() + 1;
                 if (Map.Config.MAX_ZOOM <= zoom) {
                     zoom = Map.Config.ZOOM;
                 }
                 self.map.setZoom(zoom);
             });
-            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($zoonInBtn[0]);
-            
-            var $div = $('<div>').addClass('cross');
-            
-            var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell cross-top').prop('title', 'アップボタン');
+            var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', 'アップボタン');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
             $upBtn.on('mousedown', function () {
-                self.map.panBy(0, -50);
+                self.map.panBy(0, -100);
             });
-
             var $leftBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', '左ボタン');
             $leftBtn.append($('<span class="fui-triangle-left-large" aria-hidden="true"></span>'));
             $leftBtn.on('mousedown', function () {
-                self.map.panBy(-50, 0);
+                self.map.panBy(-100, 0);
             });
             var $centerBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', 'センターボタン');
             $centerBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
@@ -316,27 +316,35 @@
             var $rightBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', '右ボタン');
             $rightBtn.append($('<span class="fui-triangle-right-large" aria-hidden="true"></span>'));
             $rightBtn.on('mousedown', function () {
-                self.map.panBy(50, 0);
+                self.map.panBy(100, 0);
             });
-            var $downBtn = $('<button>').addClass('btn btn-inverse cross-cell  cross-bottom').prop('title', 'ダウンボタン');
+            var $downBtn = $('<button>').addClass('btn btn-inverse cross-cell').prop('title', 'ダウンボタン');
             $downBtn.append($('<span class="fui-triangle-down" aria-hidden="true"></span>'));
             $downBtn.on('mousedown', function () {
-                self.map.panBy(0, 50);
+                self.map.panBy(0, 100);
             });
+            $naviBtnGroup.append($zoonBtn);
+            $naviBtnGroup.append($upBtn);
+            $naviBtnGroup.append($downBtn);
+            $naviBtnGroup.append($leftBtn);
+            $naviBtnGroup.append($rightBtn);
+            $naviBtnGroup.append($centerBtn);
 
-            $div.append($upBtn);
-            $div.append($leftBtn);
-            $div.append($centerBtn);
-            $div.append($rightBtn);
-            $div.append($downBtn);
-
-
-            this.map.controls[google.maps.ControlPosition.TOP_CENTER].push($div[0]);
-            
-            
-            
-
-            
+            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($navi[0]);
+        },
+        /**
+         * ナビゲーション設定
+         * @param {google.maps.LatLng} data
+         * @return {Void}
+         */
+        setNavigation: function (data) {
+            if (!data.length) {
+                return;
+            }
+            this.data = data;
+            // ボタン配置
+            this.setNavigationButton();
+            this.map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(this.$navi[0]);
             // 初期表示設定
             this.setMapData(data[0].name, data[0].data);
             // カテゴリー機能設定

@@ -47,7 +47,7 @@ div#canvas {
 div.cross {
     margin: 20px;
     display: table;
-    width: 141px;
+    /*width: 141px;*/
 }
 
 button.cross-cell {

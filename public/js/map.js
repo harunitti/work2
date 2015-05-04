@@ -133,8 +133,8 @@
             this.addDomEvents();
             // iPhone
             if (this.isSmallMobile()) {
-                // コントロール
-                this.setMobileControal();
+                // モバイルコントロール
+                this.setMobileControl();
             }
             // モバイル
             if (this.isMobile()) {
@@ -306,7 +306,7 @@
          * コントロール設定
          * @return {Void}
          */
-        setMobileControal: function() {
+        setMobileControl: function() {
             var self = this;
             var $navi = $('<div>').addClass('btn-toolbar').css('margin-top', '5px').css('margin-left', '10px');
             var $naviBtnGroup = $('<div>').addClass('btn-group');

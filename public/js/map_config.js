@@ -62,6 +62,11 @@
          */ 
         MAX_ZOOM: 19,
         /**
+         * モバイル十字移動距離px
+         * @type {Number}
+         */ 
+        MOBILE_MOVE_DISTANCE: 90,
+        /**
          * 画像ディレクトリ
          * @type {String}
          */

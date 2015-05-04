@@ -321,12 +321,12 @@
             var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
             $upBtn.on('mousedown', function () {
-                self.map.panBy(0, -100);
+                self.map.panBy(0, -  Map.Config.MOBILE_MOVE_DISTANCE);
             });
             var $leftBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $leftBtn.append($('<span class="fui-triangle-left-large" aria-hidden="true"></span>'));
             $leftBtn.on('mousedown', function () {
-                self.map.panBy(-100, 0);
+                self.map.panBy(-Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
             var $centerBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $centerBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
@@ -336,12 +336,12 @@
             var $rightBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $rightBtn.append($('<span class="fui-triangle-right-large" aria-hidden="true"></span>'));
             $rightBtn.on('mousedown', function () {
-                self.map.panBy(100, 0);
+                self.map.panBy(Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
             var $downBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $downBtn.append($('<span class="fui-triangle-down" aria-hidden="true"></span>'));
             $downBtn.on('mousedown', function () {
-                self.map.panBy(0, 100);
+                self.map.panBy(0, Map.Config.MOBILE_MOVE_DISTANCE);
             });
             $naviBtnGroup.append($zoonBtn);
             $naviBtnGroup.append($upBtn);

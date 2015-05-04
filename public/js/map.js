@@ -224,6 +224,19 @@
             return options;
         },
         /**
+         * 選択中のマーカーを中心にする
+         * @return {Void}
+         */
+         setCenterToMarker: function () {
+            if (this.selectedMarker) {
+                var position = this.selectedMarker.getPosition();
+                this.map.setCenter(position);
+                if (this.selectedMarker.infoWindow) {
+                    this.createInfoWindow(this.selectedMarker);
+                }
+            }
+        },
+        /**
          * ナビ作成
          * @return {Void}
          */
@@ -310,13 +323,7 @@
                 }
                 self.map.setZoom(zoom);
                 $zoonBtn.text(self.map.getZoom());
-                if (self.selectedMarker) {
-                    var position = self.selectedMarker.getPosition();
-                    self.map.setCenter(position);
-                    if (self.selectedMarker.infoWindow) {
-                        self.createInfoWindow(self.selectedMarker);
-                    }
-                }
+                self.setCenterToMarker();
             });
             var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));

@@ -108,11 +108,6 @@
          */
         isMapChangeEnd: true,
         /**
-         * 一覧画面が表示されているか
-         * @type {Boolean}
-         */
-        isListOn: false,
-        /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
@@ -397,7 +392,6 @@
             $slideShowBtn.append($('<span class="fui-image" aria-hidden="true"></span>'));
             $slideShowBtn.on('mousedown', function () {
                 self.slideView(self.selectedScrollTop);
-                self.isListOn = true;
             });
             this.$naviBtnGroup.append($slideShowBtn);
             // Infoボタン

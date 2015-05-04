@@ -42,15 +42,20 @@
          */ 
         HEIGHT: '100%',
         /**
-         * ズーム
+         * 初期ズーム
          * @type {Number}
          */ 
-        ZOOM: 16,
+        ZOOM: 17,
+        /**
+         * モバイル初期ズーム
+         * @type {Number}
+         */ 
+        MOBILE_ZOOM: 16,
         /**
          * 最小ズーム
          * @type {Number}
          */ 
-        MIN_ZOOM: 14,
+        MIN_ZOOM: 15,
         /**
          * 最大ズーム
          * @type {Number}

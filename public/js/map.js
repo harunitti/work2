@@ -213,6 +213,11 @@
                 },
                 panControl: false
             };
+            // モバイル初期ズーム
+            if (this.isMobile()) {
+                options.zoom = Map.Config.MOBILE_ZOOM;
+            }
+            // iPhoneドラッグなし
             if (this.isSmallMobile()) {
                 options.draggable = false;
             }

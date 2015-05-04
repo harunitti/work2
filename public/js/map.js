@@ -23,6 +23,11 @@
          */
         lng: Map.Config.LNG,
         /**
+         * ズーム
+         * @type {Number}
+         */
+        zoom: Map.Config.ZOOM,
+        /**
          * マップ
          * @type {google.maps.Map}
          */
@@ -126,7 +131,6 @@
             this.getMapData();
             // イベント
             this.addDomEvents();
-            // iPhone
             if (this.isSmallMobile()) {
                 // モバイルコントロール
                 this.setMobileControl();
@@ -191,13 +195,23 @@
          * @return {Object} options
          */
         getMapOptions: function (latLng) {
+            // ズーム
+            if (this.isMobile()) {
+                this.zoom = Map.Config.MOBILE_ZOOM;
+            }
+            // ドラッグ
+            var draggable = true;
+            if (this.isSmallMobile()) {
+                // iPhone禁止
+                draggable = false;
+            }
             var options = {
-                zoom: Map.Config.ZOOM,
+                zoom: this.zoom,
                 minZoom: Map.Config.MIN_ZOOM,
                 maxZoom: Map.Config.MAX_ZOOM,
                 center: latLng,
                 disableDoubleClickZoom: true,
-                draggable: true,
+                draggable: draggable,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoomControl: false,
                 streetViewControl: false,
@@ -208,14 +222,6 @@
                 },
                 panControl: false
             };
-            // モバイル初期ズーム
-            if (this.isMobile()) {
-                options.zoom = Map.Config.MOBILE_ZOOM;
-            }
-            // iPhoneドラッグなし
-            if (this.isSmallMobile()) {
-                options.draggable = false;
-            }
             return options;
         },
         /**
@@ -262,7 +268,7 @@
          */
         addDomEvents: function () {
             var self = this;
-            // 画像拡大表示
+            // 詳細を見る
             $(document).on('mousedown', '.view-large', function () {
                 var path = $(this).data('path');
                 var title = $(this).data('title');
@@ -274,6 +280,7 @@
                     self.$photoModal.modal();
                 }
             });
+            // 吹き出し閉じる
             $(document).on('mousedown', '.closeInfoWin', function (e) {
                 var title = $(this).data('title');
                 self.eachMarkers(function(marker) {
@@ -282,20 +289,16 @@
                     }
                 });
             });
-            
-            
-            // スライドショーの画像選択
-            /*
-            $(document).on('mousedown', '.slide-photo', function () {
-                var marker = $(this).data('marker');
-                if (marker) {
-                    self.removeAllInfoWindow();
-                    self.locationMarker(marker);
-                }
-                self.selectedScrollTop = self.$slideModal.scrollTop();
-                self.$slideModal.modal('hide');
+            // スライドショーの一番上に戻る
+            this.$slideModal.find('.gotoTop').on('mousedown', function() {
+                self.slideView(0);
+                self.selectedScrollTop = 0;
             });
-            */
+            // スライドショー表示へ
+            this.$photoModal.find('.gotoList').on('mousedown', function() {
+                self.$photoModal.modal('hide');
+                self.slideView(self.selectedScrollTop);
+            });
         },
         /**
          * コントロール設定
@@ -303,12 +306,11 @@
          */
         setMobileControl: function() {
             var self = this;
-            var $navi = $('<div>').addClass('btn-toolbar').css('margin-top', '5px').css('margin-left', '10px');
+            var $navi = $('<div>').addClass('btn-toolbar mobile-control');
             var $naviBtnGroup = $('<div>').addClass('btn-group');
             $navi.append($naviBtnGroup);
             // ズーム
             var $zoonBtn = $('<button>').addClass('btn btn-inverse').text(this.map.getZoom());
-            //$zoonBtn.append($('<span class="fui-search" aria-hidden="true"></span>'));
             $zoonBtn.on('mousedown', function () {
                 var zoom = self.map.getZoom();
                 if (Map.Config.MAX_ZOOM <= zoom) {
@@ -320,27 +322,32 @@
                 $zoonBtn.text(self.map.getZoom());
                 self.setCenterToMarker();
             });
-            var $upBtn = $('<button>').addClass('btn btn-inverse cross-cell');
+            // 上
+            var $upBtn = $('<button>').addClass('btn btn-inverse');
             $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
             $upBtn.on('mousedown', function () {
-                self.map.panBy(0, -  Map.Config.MOBILE_MOVE_DISTANCE);
+                self.map.panBy(0, -Map.Config.MOBILE_MOVE_DISTANCE);
             });
-            var $leftBtn = $('<button>').addClass('btn btn-inverse cross-cell');
+            // 左
+            var $leftBtn = $('<button>').addClass('btn btn-inverse');
             $leftBtn.append($('<span class="fui-triangle-left-large" aria-hidden="true"></span>'));
             $leftBtn.on('mousedown', function () {
                 self.map.panBy(-Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
-            var $centerBtn = $('<button>').addClass('btn btn-inverse cross-cell');
+            // 基点に戻る
+            var $centerBtn = $('<button>').addClass('btn btn-inverse');
             $centerBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
             $centerBtn.on('mousedown', function () {
                 self.map.setCenter({lat: self.lat, lng: self.lng});
             });
-            var $rightBtn = $('<button>').addClass('btn btn-inverse cross-cell');
+            // 右
+            var $rightBtn = $('<button>').addClass('btn btn-inverse');
             $rightBtn.append($('<span class="fui-triangle-right-large" aria-hidden="true"></span>'));
             $rightBtn.on('mousedown', function () {
                 self.map.panBy(Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
-            var $downBtn = $('<button>').addClass('btn btn-inverse cross-cell');
+            // 下
+            var $downBtn = $('<button>').addClass('btn btn-inverse');
             $downBtn.append($('<span class="fui-triangle-down" aria-hidden="true"></span>'));
             $downBtn.on('mousedown', function () {
                 self.map.panBy(0, Map.Config.MOBILE_MOVE_DISTANCE);
@@ -351,7 +358,6 @@
             $naviBtnGroup.append($leftBtn);
             $naviBtnGroup.append($rightBtn);
             $naviBtnGroup.append($centerBtn);
-
             this.map.controls[google.maps.ControlPosition.TOP_LEFT].push($navi[0]);
         },
         /**
@@ -429,25 +435,17 @@
             $(':radio').radiocheck();
             // カテゴリ選択
             $('[name="category"]').on('change', function () {
-                self.selectCategory();
+                self.switchCategory();
             });
             // スライドショー機能設定
             this.setSlideShowModal(this.data[0].name);
             this.addToolTips();
-            this.$slideModal.find('.gotoTop').on('mousedown', function() {
-                self.slideView(0);
-                self.selectedScrollTop = 0;
-            });
-            this.$photoModal.find('.gotoList').on('mousedown', function() {
-                self.$photoModal.modal('hide');
-                self.slideView(self.selectedScrollTop);
-            });
         },
         /**
-         * カテゴリ選択処理
+         * カテゴリ切替
          * @return {Void}
          */
-        selectCategory: function () {
+        switchCategory: function () {
             var no = $('input[name="category"]:checked').val();
             this.removeAllMarker();
             this.markers = [];
@@ -459,7 +457,7 @@
             this.addToolTips();
         },
         /**
-         * スライドビュー
+         * 一覧表示
          * @param {Number} scroll
          * @return {Void}
          */

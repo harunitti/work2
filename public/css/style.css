@@ -44,18 +44,9 @@ div#canvas {
     margin: 5px 0px 15px 0px;
 }
 
-div.cross {
-    margin: 20px;
-    display: table;
-    /*width: 141px;*/
-}
-
-button.cross-cell {
-    display: table-cell;
-}
-
-button.cross-top, button.cross-bottom {
-    margin: 0px 47px;
+.mobile-control {
+    margin-top: 5px;
+    margin-left: 10px;
 }
 
 /*

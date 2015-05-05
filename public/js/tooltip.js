@@ -23,7 +23,7 @@
     /**
      * 最小表示ズーム
      */
-    Map.Tooltip.prototype.SHOW_MIN_ZOOM = 18;
+    Map.Tooltip.prototype.SHOW_MIN_ZOOM = 17;
     /**
      * オフセット
      */
@@ -49,7 +49,8 @@
      */
     Map.Tooltip.prototype.draw = function () {
         var map = this.getMap();
-        if (map.getZoom() < this.SHOW_MIN_ZOOM) {
+        var zoom = map.getZoom();
+        if (zoom < this.SHOW_MIN_ZOOM) {
             this.hide();
             return;
         }
@@ -69,6 +70,11 @@
         }
         this.div.style.left = x + 'px';
         this.div.style.top = y + 'px';
+        if (zoom ==  this.SHOW_MIN_ZOOM) {
+            this.div.style.fontSize = "0.6em";
+        } else {
+            this.div.style.fontSize = "1em";
+        }
     };
     /**
      * 非表示

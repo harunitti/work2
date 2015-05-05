@@ -103,6 +103,11 @@
          */
         selectedMarker: null,
         /**
+         * センター位置記録
+         * @type {Object}
+         */
+        selectedCenter: null,
+        /**
          * ツールチップ表示
          * @type {Boolean}
          */
@@ -131,7 +136,7 @@
             this.getMapData();
             // イベント
             this.addDomEvents();
-            if (this.isSmallMobile()) {
+            if (this.isSmartPhone()) {
                 // モバイルコントロール
                 this.setMobileControl();
             }
@@ -201,7 +206,7 @@
             }
             // ドラッグ
             var draggable = true;
-            if (this.isSmallMobile()) {
+            if (this.isSmartPhone()) {
                 // iPhone禁止
                 draggable = false;
             }
@@ -270,15 +275,13 @@
             var self = this;
             // 詳細を見る
             $(document).on('mousedown', '.view-large', function () {
-                var path = $(this).data('path');
-                var title = $(this).data('title');
-                var info = $(this).data('info');
-                if (path) {
-                    self.$photoModal.find('.modal-title').text(title);
-                    self.$photoModal.find('.large-photo').prop('src', path);
-                    self.$photoModal.find('.info').html(info);
-                    self.$photoModal.modal();
-                }
+                self.viewDetail($(this));
+            });
+            // 位置を見る
+            $(document).on('mousedown', '.view-position', function () {
+                var marker = $(this).data('marker');
+                self.viewSpotPosition(marker);
+                self.selectedMarker = marker;
             });
             // 吹き出し閉じる
             $(document).on('mousedown', '.closeInfoWin', function (e) {
@@ -286,6 +289,7 @@
                 self.eachMarkers(function(marker) {
                     if (marker.title == title) {
                         self.removeInfoWindow(marker);
+                        self.backMapPosition();
                     }
                 });
             });
@@ -301,6 +305,15 @@
             });
         },
         /**
+         * 吹き出し表示前の位置に戻る
+         * @return {Void}
+         */
+        backMapPosition: function () {
+            if (this.isSmartPhone() && this.selectedCenter) {
+                this.map.setCenter(this.selectedCenter);
+            }
+        },
+        /**
          * コントロール設定
          * @return {Void}
          */
@@ -310,46 +323,60 @@
             var $naviBtnGroup = $('<div>').addClass('btn-group');
             $navi.append($naviBtnGroup);
             // ズーム
-            var $zoonBtn = $('<button>').addClass('btn btn-inverse').text(this.map.getZoom());
+            var $zoonBtn = $('<button>').addClass('btn btn-primary');
+            var $zoomIcon = $('<span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>').text(1);
+            $zoonBtn.append($zoomIcon);
             $zoonBtn.on('mousedown', function () {
                 var zoom = self.map.getZoom();
                 if (Map.Config.MAX_ZOOM <= zoom) {
-                    zoom = Map.Config.ZOOM;
+                    zoom = self.zoom;
                 } else {
                     ++ zoom;
                 }
+                if (zoom == Map.Config.MAX_ZOOM) {
+                    $zoomIcon.removeClass('glyphicon-zoom-in').addClass('glyphicon-zoom-out');
+                } else {
+                    $zoomIcon.removeClass('glyphicon-zoom-out').addClass('glyphicon-zoom-in');
+                }
                 self.map.setZoom(zoom);
-                $zoonBtn.text(self.map.getZoom());
+                var text = zoom - self.zoom + 1;
+                $zoomIcon.text(text);
                 self.setCenterToMarker();
             });
             // 上
-            var $upBtn = $('<button>').addClass('btn btn-inverse');
-            $upBtn.append($('<span class="fui-triangle-up" aria-hidden="true"></span>'));
+            var $upBtn = $('<button>').addClass('btn btn-primary');
+            $upBtn.append($('<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>'));
             $upBtn.on('mousedown', function () {
+                $centerBtn.removeClass('active');
                 self.map.panBy(0, -Map.Config.MOBILE_MOVE_DISTANCE);
             });
             // 左
-            var $leftBtn = $('<button>').addClass('btn btn-inverse');
-            $leftBtn.append($('<span class="fui-triangle-left-large" aria-hidden="true"></span>'));
+            var $leftBtn = $('<button>').addClass('btn btn-primary');
+            $leftBtn.append($('<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>'));
             $leftBtn.on('mousedown', function () {
+                $centerBtn.removeClass('active');
                 self.map.panBy(-Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
             // 基点に戻る
-            var $centerBtn = $('<button>').addClass('btn btn-inverse');
+            var $centerBtn = $('<button>').addClass('btn btn-primary active');
             $centerBtn.append($('<span class="fui-plus-circle" aria-hidden="true"></span>'));
             $centerBtn.on('mousedown', function () {
+                $centerBtn.addClass('active');
                 self.map.setCenter({lat: self.lat, lng: self.lng});
+                self.selectedCenter = self.map.getCenter();
             });
             // 右
-            var $rightBtn = $('<button>').addClass('btn btn-inverse');
-            $rightBtn.append($('<span class="fui-triangle-right-large" aria-hidden="true"></span>'));
+            var $rightBtn = $('<button>').addClass('btn btn-primary');
+            $rightBtn.append($('<span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>'));
             $rightBtn.on('mousedown', function () {
+                $centerBtn.removeClass('active');
                 self.map.panBy(Map.Config.MOBILE_MOVE_DISTANCE, 0);
             });
             // 下
-            var $downBtn = $('<button>').addClass('btn btn-inverse');
-            $downBtn.append($('<span class="fui-triangle-down" aria-hidden="true"></span>'));
+            var $downBtn = $('<button>').addClass('btn btn-primary');
+            $downBtn.append($('<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>'));
             $downBtn.on('mousedown', function () {
+                $centerBtn.removeClass('active');
                 self.map.panBy(0, Map.Config.MOBILE_MOVE_DISTANCE);
             });
             $naviBtnGroup.append($zoonBtn);
@@ -401,7 +428,7 @@
             });
             this.$naviBtnGroup.append($slideShowBtn);
             // Infoボタン
-            var $infoBtn = $('<button>').addClass('btn btn-primary').prop('title', 'Info');
+            var $infoBtn = $('<button>').addClass('btn btn-info').prop('title', 'Info');
             $infoBtn.append($('<span class="fui-info-circle" aria-hidden="true"></span>'));
             $infoBtn.on('mousedown', function () {
                 self.$infoModal.modal();
@@ -490,27 +517,15 @@
                     .prop('title', marker.title);
                 content.append($img);
                 var $controlWrap = $('<div>').addClass('slidePhotoMenu');
-                var $pointBtn = $('<button>').addClass('btn btn-success').text('位置を見る').data('marker', marker);
-                $pointBtn.on('mousedown', function() {
-                    var marker = $(this).data('marker');
-                    self.selectPhotoPoint(marker);
-                    self.selectedMarker = marker;
-                });
-                $controlWrap.append($pointBtn);
+                // 位置を見る
+                var $viewPositionBtn = $('<button>').addClass('btn btn-success view-position').text('位置を見る').data('marker', marker);
+                $controlWrap.append($viewPositionBtn);
+                // 詳細
                 var $largeBtn = $('<button>').addClass('btn btn-info').css('margin-left', '5px').text('詳細').data('marker', marker);
                 $largeBtn.data('path', self.photoDir + marker.photo.name).data('title', marker.title).data('info', marker.info)
                 $largeBtn.on('mousedown', function() {
                     self.$slideModal.modal('hide');
-                    
-                    var path = $(this).data('path');
-                    var title = $(this).data('title');
-                    var info = $(this).data('info');
-                    if (path) {
-                        self.$photoModal.find('.modal-title').text(title);
-                        self.$photoModal.find('.large-photo').prop('src', path);
-                        self.$photoModal.find('.info').html(info);
-                        self.$photoModal.modal();
-                    }
+                    self.viewDetail($(this));
                 });
                 $controlWrap.append($largeBtn);
 
@@ -518,18 +533,37 @@
             });
         },
         /**
-         * 写真選択
+         * 詳細を見る
+         * @param {Object} target
+         * @return {Void}
+         */
+        viewDetail: function (target) {
+            var path = target.data('path');
+            var title = target.data('title');
+            var info = target.data('info');
+            if (path) {
+                this.$photoModal.find('.modal-title').text(title);
+                this.$photoModal.find('.large-photo').prop('src', path);
+                this.$photoModal.find('.info').html(info);
+                this.$photoModal.modal();
+            }
+        },
+        /**
+         * 位置を見る
          * @param {Object} marker
          * @return {Void}
          */
-        selectPhotoPoint: function (marker) {
-            if (this.isSmallMobile()) {
-                this.map.setZoom(16);
-                this.map.setCenter({lat:this.lat, lng:this.lng});
-            }
+        viewSpotPosition: function (marker) {
             if (marker) {
                 this.removeAllInfoWindow();
-                this.locationMarker(marker);
+                this.bringToFront(marker);
+                if (this.isSmartPhone()) {
+                    this.map.setZoom(this.zoom);
+                    this.map.setCenter({lat: this.lat, lng: this.lng});
+                    this.popupMarker(marker, 10000, false);
+                } else {
+                    this.locationMarker(marker);
+                }
             }
             this.selectedScrollTop = this.$slideModal.scrollTop();
             this.$slideModal.modal('hide');
@@ -550,7 +584,7 @@
                 var pin = data[i]['pin'];
                 var photo = data[i]['photo'];
                 var latLng = new google.maps.LatLng(lat, lng);
-                var marker = this.setMaker(category, title, latLng, info, pin, photo);
+                var marker = this.setMarker(category, title, latLng, info, pin, photo);
             }
         },
         /**
@@ -602,19 +636,21 @@
          * @param {Object} photo
          * @return {google.maps.Marker} marker
          */
-        setMaker: function (category, title, latLng, info, pin, photo) {
+        setMarker: function (category, title, latLng, info, pin, photo) {
             var self = this;
             // マーカー追加
             var marker = this.createMarker(this.map, category, title, latLng, info, pin, photo);
             // マウスダウン
             google.maps.event.addListener(marker, 'mousedown', function (e) {
+                self.bringToFront(marker);
+                self.stopAnimationMarkers();
                 if (!marker.infoWindow) {
                     self.createInfoWindow(marker);
-                    self.bringToFront(marker);
                 } else {
                     self.removeInfoWindow(marker);
                 }
                 self.selectedMarker = marker;
+                self.selectedCenter = self.map.getCenter();
             });
             this.markers.push(marker);
             return marker;
@@ -690,6 +726,15 @@
             });
         },
         /**
+         * 全マーカーアニメーションストップ
+         * @return {Void}
+         */
+        stopAnimationMarkers: function () {
+            this.eachMarkers(function (marker) {
+                marker.setAnimation(null);
+            });
+        },
+        /**
          * 指定マーカー位置が中心になるように移動
          * @param {google.maps.Marker} marker
          * @return void
@@ -697,26 +742,30 @@
         locationMarker: function (marker) {
             var self = this;
             var latLng = marker.getPosition();
-            //google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
-                self.popupMarker(marker);
+            google.maps.event.addListenerOnce(this.map, 'center_changed', function (e) {
+                self.stopAnimationMarkers();
+                self.popupMarker(marker, 2000, true);
                 self.removeToolTips();
                 self.addToolTips();
-           // });
-            //this.map.panTo(latLng);
+            });
+            this.map.panTo(latLng);
         },
         /**
          * 指定マーカージャンプ
          * @param {google.maps.Marker} marker
+         * @param {Number} time
+         * @param {Boolean} addInfoWin
          * @return void
          */
-        popupMarker: function (marker) {
+        popupMarker: function (marker, time, addInfoWin) {
             var self = this;
             marker.setAnimation(google.maps.Animation.BOUNCE);
             window.setTimeout(function () {
                 marker.setAnimation(null);
-                //self.createInfoWindow(marker);
-                //self.bringToFront(marker);
-            }, 10000);
+                if (addInfoWin) {
+                    self.createInfoWindow(marker);
+                }
+            }, time);
         },
         /**
          * マーカー最前面へ
@@ -726,12 +775,11 @@
         bringToFront: function (marker) {
             var self = this;
             this.eachMarkers(function (marker, i, target) {
-                if (!marker.infoWindow) {
-                    return;
-                }
                 // target以外を下へ
                 if (marker != target) {
-                    marker.infoWindow.setZIndex(0);
+                    if (marker.infoWindow) {
+                        marker.infoWindow.setZIndex(0);
+                    }
                     marker.setZIndex(0);
                 } else {
                     marker.setZIndex(self.markers.length);
@@ -770,10 +818,10 @@
             var content = '';
             content += '<div class="infoWin">';
             content += '<div><strong>';
-            content += marker.title + " debug:" + this.map.getZoom();
+            content += marker.title;
             content += '</strong></div>';
             if (path) {
-                content += '<div style="display: table;">'
+                content += '<div style="display: table;">';
                 content += '<div style="float:left; display: table-cell; width:180px; margin:0px; padding:0px;" class="view-large" src="' + path + '" data-path="' + path + '" data-title="' + marker.title + '" data-info="' + marker.info + '">';
                 content += '<a href="javascript:void(0);" >詳細を見る</a><br>';
                 content += '<img src="' + path + '">';
@@ -793,6 +841,7 @@
             infoWindow.open(this.map);
             google.maps.event.addListenerOnce(infoWindow, 'closeclick', function (e) {
                 self.removeInfoWindow(marker);
+                self.backMapPosition();
             });
             marker.infoWindow = infoWindow;
         },
@@ -885,13 +934,14 @@
             this.currentMarker = new google.maps.Marker(options);
         },
         /**
-         * モバイル判定
+         * スマホ判定
          * @return {Boolean}
          */
-        isSmallMobile: function () {
+        isSmartPhone: function () {
             var userAgent = navigator.userAgent;
             if (userAgent.indexOf('iPhone') != -1 ||
-                userAgent.indexOf('iPod') != -1) {
+                userAgent.indexOf('iPod') != -1 || 
+                (userAgent.indexOf('Android') != -1 && userAgent.indexOf('Mobile') != -1)) {
                 return true;
             }
             return false;

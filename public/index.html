@@ -14,17 +14,16 @@
 </head>
 <body>
 <div id="canvas"></div>
-<h3>古城公園マップ作成ツール<a href="https://github.com/niiyz/KojoMapTool" target="_blank"><img src="/images/GitHub_Logo.png" width="60"></a>
-</h3>
+<h3>古城公園マップ作成ツール<a class="btn btn-default" href="https://github.com/niiyz/KojoMapTool" target="_blank">説明</a></h3>
 <div id="menu">
     <button id="openInfoWindowBtn" class="btn btn-default">情報ウインドウ表示</button>
     <button id="currentBtn" class="btn btn-default">現在地に打つ</button>
+    <button id="restoreBtn" class="btn btn-primary">復元</button>
+    <button id="saveBtn" class="btn btn-info">CSVダウンロード</button>
     <div class="form-group">
         <label for="csv">CSV</label>
         <textarea id="csv" class="form-control"></textarea>
     </div>
-    <button id="restoreBtn" class="btn btn-default">復元</button>
-    <button id="saveBtn" class="btn btn-default">CSVダウンロード</button>
 </div>
 <!-- modal -->
 <div id="pointInfoModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">

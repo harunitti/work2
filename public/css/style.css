@@ -34,6 +34,27 @@ div#canvas {
     padding-right:30px;
 }
 
+.infoWin .content {
+    display: table;
+}
+
+.infoWin .left-cell {
+    float:left;
+    display: table-cell;
+    width:180px;
+    margin:0px;
+    padding:0px;
+}
+
+.infoWin .right-cell {
+    display:table-cell;
+    vertical-align:middle;
+}
+
+.infoWin .closeBtn {
+    margin-left:5px;
+}
+
 .infoWin img {
     clear:both;
     width: 180px;
@@ -47,6 +68,11 @@ div#canvas {
 .mobile-control {
     margin-top: 5px;
     margin-left: 10px;
+}
+
+.category-label {
+    height: 50px;
+    font-size: 1.2em;
 }
 
 /*

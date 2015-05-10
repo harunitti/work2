@@ -30,6 +30,10 @@
     Map.Tooltip.prototype.OFFSET_X = 15;
     Map.Tooltip.prototype.OFFSET_Y = -15;
     /**
+     * タイトルのみ
+     */
+    Map.Tooltip.prototype.isTitleOnly = false;
+    /**
      * 追加
      * @return {Void}
      */
@@ -42,6 +46,10 @@
         this.div = div;
         var panes = this.getPanes();
         panes.markerLayer.appendChild(div);
+        if (!this.marker.info && !this.marker.photo.name) {
+            this.isTitleOnly = true;
+            div.style.color = '#006400';
+        }
     };
     /**
      * 描画
@@ -61,20 +69,26 @@
             return;
         }
         this.show();
-        var overlayProjection = this.getProjection();
-        var point = overlayProjection.fromLatLngToDivPixel(latLng);
-        var x = point.x;
-        var y = point.y + this.marker.iconOffsetHeight + this.OFFSET_Y;
-        if (!this.marker.pin) {
-            x += this.OFFSET_X;
-        }
-        this.div.style.left = x + 'px';
-        this.div.style.top = y + 'px';
         if (zoom ==  this.SHOW_MIN_ZOOM) {
-            this.div.style.fontSize = "0.6em";
+            this.div.style.fontSize = "0.8em";
         } else {
             this.div.style.fontSize = "1em";
         }
+        var overlayProjection = this.getProjection();
+        var point = overlayProjection.fromLatLngToDivPixel(latLng);
+        var x = point.x;
+        var y = point.y;
+        if (this.isTitleOnly) {
+            y += this.marker.iconOffsetHeight / 2;
+            x += - (this.marker.title.length * 5);
+        } else {
+            y += this.marker.iconOffsetHeight + this.OFFSET_Y;
+            if (!this.marker.pin) {
+                x += this.OFFSET_X;
+            }
+        }
+        this.div.style.left = x + 'px';
+        this.div.style.top = y + 'px';
     };
     /**
      * 非表示

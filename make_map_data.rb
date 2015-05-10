@@ -2,32 +2,22 @@ require 'csv'
 require 'json'
 require 'cgi'
 require 'image_size'
+require 'yaml'
 
 class MakeMapData
-  CSV_DIR   = 'csv/'
-  ICON_DIR  = 'public/images/icon/'
-  PHOTO_DIR = 'public/images/photo/'
-
-  SAVE_DATA_PATH = 'map_data.json'
 
   def initialize
     @mapData = []
-    @fileData = []
-  end
-
-  def add(name, file)
-    if File.exist?(CSV_DIR + file) then
-      @fileData.push({name: name, path: CSV_DIR + file})
-    else
-      p '存在しないファイル:' + CSV_DIR + file
-    end
+    @config = YAML.load_file("config.yml")
+    @fileData = @config['category']
+    p @fileData
   end
 
   def make
     @fileData.each do |category|
-      p category[:name] + ' ' + category[:path]
       data = []
-      CSV.foreach(category[:path]) do |row|
+      path = @config['csv'] + category['csv']
+      CSV.foreach(path) do |row|
         if row.size != 6 then
           next
         end
@@ -37,14 +27,14 @@ class MakeMapData
         line['lng']    = self.escape(row[2])
         line['info']   = self.escape(row[3], true)
         pin = self.escape(row[4])
-        line['pin']    = {'name': pin, 'size': self.getImageSize(ICON_DIR, pin)}
+        line['pin']    = {'name': pin, 'size': self.getImageSize(@config['image']['icon'], pin)}
         photo = self.escape(row[5])
-        line['photo']  = {'name': photo, 'size': self.getImageSize(PHOTO_DIR, photo)}
+        line['photo']  = {'name': photo, 'size': self.getImageSize(@config['image']['photo'], photo)}
         data.push(line)
       end
-      @mapData.push({'name': category[:name], 'data': data})
+      @mapData.push({'name': category['name'], 'data': data})
     end
-    File.open(SAVE_DATA_PATH, 'w').write(JSON.generate(@mapData))
+    File.open(@config['save']['json'], 'w').write(JSON.generate(@mapData))
   end
 
   def getImageSize(dir, file)
@@ -78,7 +68,4 @@ class MakeMapData
 end
 
 data = MakeMapData.new
-data.add('歴史', 'rekishi_kojyo_map.csv')
-data.add('自然', 'shizen_kojyo_map.csv')
-data.add('銅像', 'bronze_kojyo_map.csv')
 data.make()

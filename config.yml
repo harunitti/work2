@@ -1,0 +1,18 @@
+#config.yml--------------------
+---
+csv: 'csv/'
+
+image:
+  icon: 'public/images/icon/'
+  photo: 'public/images/photo/'
+
+save:
+  json: 'map_data.json'
+
+category:
+  - name: '歴史'
+    csv: 'rekishi_kojyo_map.csv'
+  - name: '自然'
+    csv: 'shizen_kojyo_map.csv'
+  - name: '銅像'
+    csv: 'bronze_kojyo_map.csv'

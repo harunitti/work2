@@ -104,18 +104,20 @@ CSVを設置する。
 shizen_kojyo_map.csv    rekishi_kojyo_map.csv
 ~~~
 
-## 2. make_map_data.rb編集
+## 2. 設定ファイル(config.yml)編集
 
 make_map_data.rbはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
 
-make_map_data.rbの下部でカテゴリ名と対応するCSVを記述してください。
+設定ファイル(config.yml)のcategoryにカテゴリ名と対応するCSVを記述してください。
 
 ~~~
-data = MakeMapData.new
-data.add('歴史', 'rekishi_kojyo_map.csv')
-data.add('自然', 'shizen_kojyo_map.csv')
-data.add('銅像', 'bronze_kojyo_map.csv')
-data.make()
+category:
+  - name: '歴史'
+    csv: 'rekishi_kojyo_map.csv'
+  - name: '自然'
+    csv: 'shizen_kojyo_map.csv'
+  - name: '銅像'
+    csv: 'bronze_kojyo_map.csv'
 ~~~
 
 ## 3. make_map_data.rb実行

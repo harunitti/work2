@@ -3,81 +3,122 @@
 <head lang="ja">
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <title>古城公園マップ作成ツール</title>
-    <meta name="description" content="高岡古城公園のマップ作成ツールです。">
-    <meta property="og:title" content="古城公園マップ作成ツール" />
+    <title>古城公園マップ</title>
+    <meta name="description" content="高岡古城公園のマップです。">
+    <meta property="og:title" content="古城公園マップ" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="http://kojo.niiyz.com" />
-    <meta property="og:description" content="高岡古城公園のマップ作成ツールです。" />
+    <meta property="og:url" content="http://kojo.niiyz.com/map.html" />
+    <meta property="og:description" content="高岡古城公園のマップです。" />
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/flat-ui.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div id="canvas"></div>
-<h3>古城公園マップ作成ツール<a class="btn btn-default" href="https://github.com/niiyz/KojoMapTool" target="_blank">説明</a></h3>
-<div id="menu">
-    <button id="openInfoWindowBtn" class="btn btn-default">情報ウインドウ表示</button>
-    <button id="currentBtn" class="btn btn-default">現在地に打つ</button>
-    <button id="restoreBtn" class="btn btn-primary">復元</button>
-    <button id="saveBtn" class="btn btn-info">CSVダウンロード</button>
-    <div class="form-group">
-        <label for="csv">CSV</label>
-        <textarea id="csv" class="form-control"></textarea>
+<!-- Info modal -->
+<div id="infoModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Info</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">リンク</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li><a href="http://code4takaoka.e-nat.org/" target="_blank">Code for Takaoka</a></li>
+                            <li><a href="http://www.kojyo.sakura.ne.jp/" target="_blank">高岡古城公園公式ウェブサイト</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          </div>
+        </div>
     </div>
 </div>
-<!-- modal -->
-<div id="pointInfoModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
+<!-- Setting modal -->
+<div id="settingModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">カテゴリ設定</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">カテゴリ一覧</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form role="form">
+                            <div class="form-group" id="categoryList"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- List modal -->
+<div id="listModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"></h4>
-        <div class="form-group">
-            <label for="title">タイトル</label>
-            <input type="text" id="title" class="form-control">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">一覧</h4>
         </div>
-        <div class="form-group row">
-            <div class="col-xs-6">
-                <label for="lat">緯度</label>
-                <input type="text" id="lat" class="form-control">
-            </div>
-            <div class="col-xs-6">
-                <label for="lng">経度</label>
-                <input type="text" id="lng" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="info">説明文 (改行は&lt;br&gt;)</label>
-            <input type="text" id="info" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="pin">アイコン</label>
-            <select id="pin" class="form-control">
-                <option value="">デフォルト</option>
-            </select>
-            <label for="photo">写真</label>
-            <select id="photo" class="form-control">
-                <option value="">なし</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <button id="cancelBtn" class="btn btn-default">キャンセル</button>
-            <button id="updateBtn" class="btn btn-default">更新</button>
-            <button id="deleteBtn" class="btn btn-danger">削除</button>
-        </div>
+      <div id="slideList" class="text-center"></div>
+      <div class="modal-footer">
+          <button type="button" class="gotoTop btn btn-warning">一番上へ</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
       </div>
     </div>
   </div>
 </div>
+<!-- Detail modal -->
+<div id="detailModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" data-marker="">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+              <img class="large-photo img-responsive img-rounded" src="">
+              <p class="info"></p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-success view-position">位置を見る</button>
+              <button type="button" class="gotoList btn btn-danger">一覧</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          </div>
+      </div>
+  </div>
+</div>
 <script type="text/javascript" src="lib/jquery-2.1.3.min.js"></script>
 <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="lib/flat-ui.min.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
-<script type="text/javascript" src="js/tool_config.js" charset="UTF-8"></script>
-<script type="text/javascript" src="js/tool.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/map_config.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/tooltip.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/map.js" charset="UTF-8"></script>
 <script>
 window.onload = function () {
-    var tool = new Map.Tool();
-    tool.initialize();
+    var app = new Map.App();
+    app.initialize();
 };
 </script>
 </body>

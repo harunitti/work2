@@ -19,10 +19,6 @@
   フラミンゴ,36.74919215362724,137.0208728313446,フラミンゴがいます。<br>20匹くらいいます。,flamingo_icon.svg,flamingo1.png
  ```
 
-#URL
-  高岡古城公園マップ作成ツール
-　http://kojo.niiyz.com/
-
 #設定ファイル
   古城公園以外で使用する場合は、js/tool_config.jsのConfig.LAT, Config.LNGを変更してマップの初期位置を変えてください。
 

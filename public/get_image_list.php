@@ -38,17 +38,17 @@ class GetImageList
                 $file = [];
                 $file['name'] = $info->getFilename();
                 if ($getSize) {
-                    if (pathinfo($file['name'], PATHINFO_EXTENSION) == "svg") {
-                        $xml = simplexml_load_file($pathName);
-                        $width = (string) $xml->attributes()->width;
-                        $height = (string) $xml->attributes()->height;
-                        $file['width'] = substr($width, 0, -2);
-                        $file['height'] = substr($height ,0, -2);
-                    } else {
+                    #if (pathinfo($file['name'], PATHINFO_EXTENSION) == "svg") {
+                    #    $xml = simplexml_load_file($pathName);
+                    #    $width = (string) $xml->attributes()->width;
+                    #    $height = (string) $xml->attributes()->height;
+                    #    $file['width'] = substr($width, 0, -2);
+                    #    $file['height'] = substr($height ,0, -2);
+                    #} else {
                         list($width, $height) = getimagesize($pathName);
                         $file['width'] = $width;
                         $file['height'] = $height;
-                    }
+                    #}
                 }
                 $list[] = $file;
             }

@@ -1,0 +1,27 @@
+{
+  "name": "kojo_map_tool",
+  "version": "0.0.0",
+  "description": "KojoMapTool",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/niiyz/KojoMapTool.git"
+  },
+  "keywords": [
+    "googleMapAPIv3",
+    "takaoka",
+    "kojo"
+  ],
+  "author": "niiyz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/niiyz/KojoMapTool/issues"
+  },
+  "homepage": "https://github.com/niiyz/KojoMapTool",
+  "devDependencies": {
+    "express": "*"
+  }
+}

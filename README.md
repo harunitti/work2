@@ -4,8 +4,10 @@
 
 地点情報の作成・編集・確認を行い最終的にCSVデータを作成することが目的です。
  
-### デモ Map
+デモサイト Map本体
 https://kojo-map.herokuapp.com/
+
+デモ動画 Map作成ツール
 
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 

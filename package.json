@@ -21,7 +21,7 @@
     "url": "https://github.com/niiyz/KojoMapTool/issues"
   },
   "homepage": "https://github.com/niiyz/KojoMapTool",
-  "devDependencies": {
+  "dependencies": {
     "express": "*"
   }
 }

@@ -7,9 +7,6 @@
 ### デモ Map
 https://kojo-map.herokuapp.com/
 
-### デモ Tool(環境によりCSVダウンロード機能利用不可)
-https://kojo-map.herokuapp.com/tool.html
-
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 
 # CSV仕様

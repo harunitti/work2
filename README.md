@@ -3,7 +3,15 @@
 高岡古城公園マップ作成ツールはGoogleMapApiv3を利用した地図を作るためのツールです。
 
 地点情報の作成・編集・確認を行い最終的にCSVデータを作成することが目的です。
- 
+
+# 始め方
+
+```
+gem install foreman
+foreman start
+// ブラウザでhttp://localhost:5000/ にアクセス
+```
+
 デモサイト Map本体
 https://kojo-map.herokuapp.com/
 

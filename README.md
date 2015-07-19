@@ -7,9 +7,12 @@
 # 始め方
 
 ```
-gem install foreman
-foreman start
-// ブラウザでhttp://localhost:5000/ にアクセス
+$ git clone https://github.com/niiyz/KojoMapTool.git kojo
+$ cd kojo
+$ npm install express
+$ gem install foreman
+$ foreman start
+// ブラウザでhttp://localhost:5000/ にアクセスで見れればOK
 ```
 
 デモサイト Map本体

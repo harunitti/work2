@@ -113,9 +113,11 @@ public/images/photoにアイコン用画像、public/images/photoに地点の写
 
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast2.gif)
 
-# 3. マップ本体
+# 2. マップデータ作成
 
-## 3-1. CSV設置
+カテゴリ毎に作成したCSVデータを1つのJsonデータにまとめます。
+
+## 2-1. CSV設置
 
 マップ作成ツールで作成したCSVファイルを全部csvディレクトリに設置します。
 
@@ -130,7 +132,7 @@ CSVを設置する。
 shizen_kojyo_map.csv    rekishi_kojyo_map.csv
 ~~~
 
-## 3-2. 設定ファイル編集(config.yml)
+## 2-2. 設定ファイル編集(config.yml)
 
 make_map_data.rbはカテゴリ毎CSVを結合して１つのjsonファイルを作成します。
 
@@ -147,7 +149,7 @@ category:
     csv: 'bronze_kojyo_map.csv'
 ~~~
 
-## 3-3. make_map_data.rb実行
+## 2-3. make_map_data.rb実行
 
 画像のサイズを取得しているのでimagesに画像が必要です。
 
@@ -159,8 +161,9 @@ make_map_data.rbを実行すると同階層にmap_data.jsonが作成されます
 map_data.json
 ~~~
 
+# 3. マップ本体
 
-## 3-4. マップ[index.html]にマップデータ配置
+## 3-1. Jsonデータ配置
 
 map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
@@ -169,7 +172,7 @@ map_data.jsonをpublic/data/map_data.jsonとして設置します。
 % mv map_data.json public/data/map_data.json 
 ~~~
 
-## 3-5. 設定ファイル編集(map_config.js)
+## 3-2. 設定ファイル編集(map_config.js)
 
 設定ファイルを編集して緯度、経度、初期ズームの設定をしてください。
 

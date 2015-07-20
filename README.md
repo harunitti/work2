@@ -1,6 +1,8 @@
-# Original GoogleMap Making Tool
+# KojoMapTool
 
-KojoMapToolは、GoogleMapAPIv3を利用した地図を作るためのツールです。
+KojoMapToolは、GoogleMapAPIv3を利用したオリジナル地図作成ツールです。
+
+高岡古城公園の地図を作成するために作りましたが、設定を変更すれば別の場所の地図も自由に作成できます。
 
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 
@@ -11,14 +13,15 @@ KojoMapToolは、GoogleMapAPIv3を利用した地図を作るためのツール�
 - CSV1つで1カテゴリとなります
 - 集めたCSVデータを1ファイルのjsonにします。
 - マップ画面(index.html)でjsonを読み込んでオリジナルのGoogleマップを表示します。
-- モバイル端末でアクセスした場合に現在地を表示します。
+- カテゴリごとにマーカーを表示し、メニューからカテゴリを切り替えることができます。
+- モバイル端末でアクセスした場合に現在地を青いアイコンで表示して追跡します。
 
 # Deploy on Heroku
 
 [![Heroku Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/niiyz/KojoMapTool)
 
 
-# ローカルでサクッと試す(MacOSX)
+# ローカルで動かす(MacOSX)
 
 ```
 $ git clone https://github.com/niiyz/KojoMapTool.git kojo

@@ -1,6 +1,6 @@
-# 高岡古城公園マップ作成ツール
+# Original GoogleMap Making Tool
 
-高岡古城公園マップ作成ツールはGoogleMapAPIv3を利用した地図を作るためのツールです。
+KojoMapToolは、GoogleMapAPIv3を利用した地図を作るためのツールです。
 
 ![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 

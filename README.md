@@ -69,7 +69,7 @@ public/images/photoにアイコン用画像、public/images/photoに地点の写
 gulpでJSファイルを結合圧縮してます。
 
 ```
-gulp default
+$ gulp
 ```
 
 # マップ作成画面[tool.html]の操作

@@ -13,6 +13,11 @@
 - マップ画面(index.html)でjsonを読み込んでオリジナルのGoogleマップを表示します。
 - モバイル端末でアクセスした場合に現在地を表示します。
 
+# Deploy on Heroku
+
+[![Heroku Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/niiyz/KojoMapTool)
+
+
 # ローカルでサクッと試す(MacOSX)
 
 ```
@@ -24,10 +29,6 @@ $ foreman start
 // ブラウザでhttp://localhost:5000/ でマップ表示
 // ブラウザでhttp://localhost:5000/tool.html でマップ作成(管理画面)表示
 ```
-
-# Deploy on Heroku
-
-[![Heroku Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/niiyz/KojoMapTool)
 
 # 1. マップ作成ツール画面
 

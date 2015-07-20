@@ -2,11 +2,13 @@
 
 高岡古城公園マップ作成ツールはGoogleMapAPIv3を利用した地図を作るためのツールです。
 
-複数人で地図を作成する時などを想定しています。
+複数人で地図を作成することを想定しています。
+
+![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 
 1. マップ作成画面[tool.html]で地点情報の作成・編集・確認を行いCSVデータを作成します。
 
-2. 集めたCSVデータを1ファイルのjsonにします。
+2. 集めたCSVデータを1ファイルのjsonにします。(CSV1つで1カテゴリとなります)
 
 3. マップ画面[index.html]でマップを表示します。
 
@@ -21,13 +23,6 @@ $ foreman start
 // ブラウザでhttp://localhost:5000/ でマップ表示
 // ブラウザでhttp://localhost:5000/tool.html でマップ作成(管理画面)表示
 ```
-
-デモサイト Map本体
-https://kojo-map.herokuapp.com/
-
-デモ動画 Map作成ツール
-
-![Screencast](https://github.com/niiyz/kojo_map_tool/blob/master/screencast1.gif)
 
 # CSV仕様
 

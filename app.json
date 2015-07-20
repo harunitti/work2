@@ -1,0 +1,17 @@
+{
+  "name": "kojo-map-tool",
+  "description": "Map making tool for GoogleMapAPIv3",
+  "website": "https://github.com/niiyz/KojoMapTool",
+  "repository": "https://github.com/niiyz/KojoMapTool",
+  "logo": "",
+  "success_url": "/",
+  "keywords": [
+    "googlemapapiv3",
+    "map",
+    "tool",
+    "japanese"
+  ],
+  "addons": [
+    "heroku-postgresql"
+  ]
+}

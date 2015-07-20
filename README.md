@@ -27,7 +27,7 @@ $ foreman start
 
 [![Heroku Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/niiyz/KojoMapTool)
 
-# 1. マップ作成ツール画面[tool.html]
+# 1. マップ作成ツール画面
 
 ## 1-1 設定ファイル編集(tool_config.js)
 
@@ -117,7 +117,7 @@ public/images/photoにアイコン用画像、public/images/photoに地点の写
 
 ## 3-1. CSV設置
 
-マップ作成[tool.html]画面で作成したCSVファイルをcsvディレクトリに設置します。
+マップ作成ツールで作成したCSVファイルを全部csvディレクトリに設置します。
 
 ~~~
 % mkdir csv
@@ -149,7 +149,7 @@ category:
 
 ## 3-3. make_map_data.rb実行
 
-imagesに画像が必要です。
+画像のサイズを取得しているのでimagesに画像が必要です。
 
 make_map_data.rbを実行すると同階層にmap_data.jsonが作成されます。
 

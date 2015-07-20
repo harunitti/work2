@@ -26,5 +26,15 @@
     "bluebird": "*",
     "body-parser": "*",
     "image-size": "0.3.5"
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-concat": "*",
+    "gulp-uglify": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-coffee": "*",
+    "gulp-minify-css": "*",
+    "coffee-script": "*",
+    "del": "*"
   }
 }

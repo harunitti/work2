@@ -180,7 +180,7 @@
         /**
          * Domイベント設定
          * @return {Void}
-         */ 
+         */
         addDomEvents: function () {
             var self = this;
             // 情報ウインドウ表示
@@ -608,7 +608,7 @@
 
             var form = document.createElement('form');
             form.setAttribute('method', 'post');
-            form.setAttribute('action', 'csv_download.php');
+            form.setAttribute('action', 'csv_download');
             iframe.appendChild(form);
 
             this.eachMarkers(function (marker) {
@@ -624,6 +624,7 @@
             });
 
             form.submit();
+
         },
         /**
          * 復元
@@ -672,7 +673,7 @@
         /**
          * モバイル判定
          * @return {Boolean}
-         */ 
+         */
         isMobile: function () {
             var userAgent = navigator.userAgent;
             if (userAgent.indexOf('iPhone') != -1 ||

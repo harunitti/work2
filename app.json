@@ -9,7 +9,8 @@
     "googlemapapiv3",
     "map",
     "tool",
-    "japanese"
+    "toyama",
+    "takaoka"
   ],
   "addons": [
     "heroku-postgresql"

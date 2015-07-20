@@ -1,102 +1,102 @@
 /**
  * マップ作成ツール
- * 
+ *
  * @author yoshida@niiyz.com (Tetsuya Yoshida)
  */
 (function(global) {
 
     'use strict';
-    
+
     var Map = global.Map || (global.Map = {});
-    
+
     Map.Tool = function Tool() {};
 
     Map.Tool.prototype = {
         /**
          * 緯度
          * @type {Number}
-         */ 
+         */
         lat: Map.Config.LAT,
         /**
          * 経度
          * @type {Number}
-         */ 
+         */
         lng: Map.Config.LNG,
         /**
          * ズーム
          * @type {Number}
-         */ 
+         */
         zoom: Map.Config.ZOOM,
         /**
          * マウスダウン判定
          * @type {Boolean}
-         */ 
+         */
         isDown: false,
         /**
          * マップ
          * @type {google.maps.Map}
-         */ 
+         */
         map: null,
         /**
          * マーカーリスト
          * @type {Array.<google.maps.Marker>}
-         */ 
+         */
         markers: [],
         /**
          * 現在地マーカー
          * @type {google.maps.Marker}
-         */ 
+         */
         currentMarker: null,
         /**
          * モダール
          * @type {Object}
-         */ 
+         */
         $modal: $('#pointInfoModal'),
         /**
          * CSVテキストエリア
          * @type {Object}
-         */ 
+         */
         $csv: $("#csv"),
         /**
          * 情報ウインドウ表示
          * @type {Boolean}
-         */ 
+         */
         isInfoWindowOpen: false,
         /**
          * マウスダウン遅延
          * @type {Number}
-         */ 
+         */
         mouseDownDelay: Map.Config.MOUSE_DOWN_DELAY_PC,
        /**
          * 画像ディレクトリ
          * @type {String}
-         */ 
+         */
         imageDir: Map.Config.IMAGE_DIR,
         /**
          * 写真ディレクトリ
          * @type {String}
-         */ 
+         */
         photoDir: Map.Config.PHOTO_DIR,
         /**
          * アイコン画像ディレクトリ
          * @type {String}
-         */ 
+         */
         pinDir: Map.Config.ICON_DIR,
         /**
          * 写真セレクト
          * @type {Object}
-         */ 
+         */
         $photoSelect: $("#photo"),
         /**
          * アイコンセレクト
          * @type {Object}
-         */ 
+         */
         $pinSelect: $("#pin"),
         /**
          * 初期処理
          * @param {Object} options
          * @return {Void}
-         */ 
+         */
         initialize: function () {
             this.mapDiv = document.getElementById('canvas');
             // モバイル判定
@@ -112,6 +112,7 @@
                 var currentBtn = document.getElementById('currentBtn');
                 currentBtn.style.display = 'none';
             }
+            console.log("init");
             // map作成
             this.addMap();
             // domイベント
@@ -126,7 +127,7 @@
         /**
          * マップ作成
          * @return {Void}
-         */ 
+         */
         addMap: function () {
             var self = this;
             // 初期中心地点
@@ -144,19 +145,19 @@
          * マーカー作成
          * @param {google.maps.LatLng} latLng
          * @return {Void}
-         */ 
+         */
         addMarker: function (latLng) {
             var cnt = this.markers.length + 1;
             var title = 'マーカー' + cnt;
             this.setMaker(title, latLng);
             this.updateCSV();
-        }, 
+        },
         /**
          * マーカー処理
          * @param {Function} func
          * @param {google.maps.Marker} target
          * @return {Void}
-         */ 
+         */
         eachMarkers: function (func, target) {
             for (var i = 0; i < this.markers.length; i++) {
                 var marker = this.markers[i];
@@ -167,7 +168,7 @@
          * マーカー検索
          * @param {google.maps.Marker} target
          * @return {Number} i
-         */ 
+         */
         searchMarkers: function (target) {
             for (var i = 0; i < this.markers.length; i++) {
                 if (this.markers[i] === target) {
@@ -236,24 +237,26 @@
          * @return void
          */
         getImageList: function () {
+            console.log("getImageList");
             var self = this;
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: "get_image_list.php",
+                url: "get_image_list",
                 success: function (data) {
+                    console.log(data);
                     var i, filename, options = '';
-                    for (i = 0; i < data.photo.length; i++) {
-                        filename = data.photo[i].name;
+                    for (i = 0; i < data[0].length; i++) {
+                        filename = data[0][i].name;
                         options += '<option value="' + filename + '">' + filename + '</option>';
                     }
                     self.$photoSelect.append(options);
                     options = '';
                     var w, h;
-                    for (i = 0; i < data.pin.length; i++) {
-                        filename = data.pin[i].name;
-                        w = data.pin[i].width;
-                        h = data.pin[i].height;
+                    for (i = 0; i < data[1].length; i++) {
+                        filename = data[1][i].name;
+                        w = data[1][i].width;
+                        h = data[1][i].height;
                         options += '<option value="' + filename + '" data-width="' + w +  '" data-height="' + h + '">' + filename + '</option>';
                     }
                     self.$pinSelect.append(options);
@@ -286,7 +289,7 @@
          * @param {String} pin
          * @param {String} photo
          * @return {google.maps.Marker} marker
-         */ 
+         */
         createMarker: function (map, title, latLng, info, pin, photo) {
             var options = {
                 map: map,
@@ -320,7 +323,7 @@
          * @param {String} pin
          * @param {String} photo
          * @return {Void}
-         */ 
+         */
         setMaker: function (title, latLng, info, pin, photo) {
             var self = this;
             // マーカー追加
@@ -368,7 +371,7 @@
         /**
          * マーカー更新
          * @return {Void}
-         */ 
+         */
         updateMarker: function () {
             var self = this;
             var marker = self.$modal.data('marker');
@@ -387,7 +390,7 @@
         /**
          * マーカー削除
          * @return {Void}
-         */ 
+         */
         deleteMarker: function () {
             var marker = this.$modal.data('marker');
             if (marker && window.confirm('削除しますか？')) {
@@ -404,7 +407,7 @@
          * モダールにマーカー情報表示
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         setMarkerData: function (marker) {
             this.$modal.find('.modal-title').text(marker.title + 'の編集');
             this.$modal.find('#title').val(marker.getTitle());
@@ -419,7 +422,7 @@
          * データ更新
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         updateMarkerData: function (marker) {
             var title = this.$modal.find('#title').val();
             marker.setTitle(title);
@@ -445,7 +448,7 @@
          * 情報ウインドウ表示管理
          * @param {object} openInfoWindowBtn
          * @return {Void}
-         */ 
+         */
         toggleInfoWindow: function (openInfoWindowBtn) {
             var self = this;
             if (!this.markers.length) {
@@ -472,7 +475,7 @@
          * 情報ウインドウ作成
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         createInfoWindow: function (marker) {
             this.removeInfoWindow(marker);
             var content = '';
@@ -499,7 +502,7 @@
          * 情報ウインドウ削除
          * @param {google.maps.Marker} marker
          * @return {Void}
-         */ 
+         */
         removeInfoWindow: function (marker) {
             if (marker.infoWindow) {
                 marker.infoWindow.close();
@@ -509,7 +512,7 @@
         /**
          * 現在地追跡
          * @return {Void}
-         */ 
+         */
         watchCurrent: function () {
             var self = this;
             this.watchCurrentPosition(function(center) {
@@ -524,7 +527,7 @@
          * 現在地追跡
          * @param {Function} func
          * @return {Void}
-         */ 
+         */
         watchCurrentPosition: function (func) {
             var self = this;
             if (navigator.geolocation) {
@@ -550,7 +553,7 @@
          * 現在地表示
          * @param {google.maps.LatLng} latLng
          * @return {Void}
-         */ 
+         */
         setCurrentMarker: function(latLng) {
             // define our custom marker image
             var image = new google.maps.MarkerImage(

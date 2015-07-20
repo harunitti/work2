@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/niiyz/KojoMapTool",
   "dependencies": {
-    "express": "*"
+    "express": "*",
+    "bluebird": "*",
+    "image-size": "0.3.5"
   }
 }

@@ -1,10 +1,16 @@
- 高岡古城公園マップ作成ツール
+# 高岡古城公園マップ作成ツール
 
-高岡古城公園マップ作成ツールはGoogleMapApiv3を利用した地図を作るためのツールです。
+高岡古城公園マップ作成ツールはGoogleMapAPIv3を利用した地図を作るためのツールです。
 
-地点情報の作成・編集・確認を行い最終的にCSVデータを作成することが目的です。
+複数人で地図を作成する時などを想定しています。
 
-# 始め方
+1. マップ作成画面[tool.html]で地点情報の作成・編集・確認を行いCSVデータを作成します。
+
+2. 集めたCSVデータを1ファイルのjsonにします。
+
+3. マップ画面[index.html]でマップを表示します。
+
+# ローカルでサクッと試す(MacOSX)
 
 ```
 $ git clone https://github.com/niiyz/KojoMapTool.git kojo
@@ -12,7 +18,8 @@ $ cd kojo
 $ npm install
 $ sudo gem install foreman
 $ foreman start
-// ブラウザでhttp://localhost:5000/ にアクセスで見れればOK
+// ブラウザでhttp://localhost:5000/ でマップ表示
+// ブラウザでhttp://localhost:5000/tool.html でマップ作成(管理画面)表示
 ```
 
 デモサイト Map本体
@@ -34,11 +41,43 @@ https://kojo-map.herokuapp.com/
   ペンギン,36.74919215362724,137.0208728313446,ペンギンがいます。<br>10匹くらいいます。,pengin_icon.png,pengin1.jpg
   フラミンゴ,36.74919215362724,137.0208728313446,フラミンゴがいます。<br>20匹くらいいます。,flamingo_icon.svg,flamingo1.png
  ```
+ 
+# マップ作成画面[tool.html]の設定
 
-#設定ファイル
-  古城公園以外で使用する場合は、js/tool_config.jsのConfig.LAT, Config.LNGを変更してマップの初期位置を変えてください。
+### src/js/tool/tool_config.jsを編集して緯度、経度、初期ズームなどを変更する。
 
-#操作
+```
+    Map.Config = {
+        /**
+         * 緯度
+         * @type {Number}
+         */ 
+        LAT: 36.748920,
+        /**
+         * 経度
+         * @type {Number}
+         */ 
+        LNG: 137.021867,
+        /**
+         * ズーム
+         * @type {Number}
+         */ 
+        ZOOM: 17,
+```
+
+### 画像を設置する。
+
+public/images/photoにアイコン用画像、public/images/photoに地点の写真(吹き出しに表示)を設置してください。
+
+### JS出力
+
+gulpでJSファイルを結合圧縮してます。
+
+```
+gulp default
+```
+
+# マップ作成画面[tool.html]の操作
 
 ## 1. 新規マーカー追加
  地図上でダブルクリックした位置にマーカーを作成します。
@@ -103,7 +142,7 @@ https://kojo-map.herokuapp.com/
 
 ## 1. CSV設置
 
-マップ作成ツールでCSVファイルを作成したらcsvディレクトリを作成して配下に設置します。
+マップ作成[tool.html]画面で作成したCSVファイルをcsvディレクトリに設置します。
 
 ~~~
 % mkdir csv
@@ -134,7 +173,7 @@ category:
 
 ## 3. make_map_data.rb実行
 
-画像サイズを取得しているのでローカルで実行する場合はローカル環境にも画像を設置してください。
+imagesに画像が必要です。
 
 make_map_data.rbを実行すると同階層にmap_data.jsonが作成されます。
 
@@ -145,7 +184,7 @@ map_data.json
 ~~~
 
 
-## 4. マップデータ配置
+## 4. マップ[index.html]にマップデータ配置
 
 map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
@@ -156,7 +195,7 @@ map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
 ## 5. 初期位置(緯度経度)設定
 
-js/map_config.jsで初期位置(緯度経度)の設定をしてください。
+src/js/map/map_config.jsで初期位置(緯度経度)の設定をしてください。
 
 ~~~
     Map.Config = {
@@ -174,16 +213,6 @@ js/map_config.jsで初期位置(緯度経度)の設定をしてください。
 
 # マップ本体　表示
 
-js/map.js内からdata/map_data.jsonを読み込んでマップを表示します。
+```
 
-map.html
-~~~
-<script type="text/javascript" src="js/map_config.js" charset="UTF-8"></script>
-<script type="text/javascript" src="js/map.js" charset="UTF-8"></script>
-<script>
-window.onload = function () {
-    var app = new Map.App();
-    app.initialize();
-};
-</script>
-~~~
+```

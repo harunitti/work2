@@ -24,6 +24,11 @@ $ foreman start
 // ブラウザでhttp://localhost:5000/tool.html でマップ作成(管理画面)表示
 ```
 
+# Deploy on Heroku
+
+[![Heroku Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/niiyz/KojoMapTool)
+
+
 # CSV仕様
 
  ```csv

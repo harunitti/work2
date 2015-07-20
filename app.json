@@ -3,7 +3,7 @@
   "description": "Map making tool for GoogleMapAPIv3",
   "website": "https://github.com/niiyz/KojoMapTool",
   "repository": "https://github.com/niiyz/KojoMapTool",
-  "logo": "",
+  "logo": "https://github.com/niiyz/KojoMapTool/blob/master/public/images/logo.png",
   "success_url": "/",
   "keywords": [
     "googlemapapiv3",

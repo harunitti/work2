@@ -11,8 +11,5 @@
     "tool",
     "toyama",
     "takaoka"
-  ],
-  "addons": [
-    "heroku-postgresql"
   ]
 }

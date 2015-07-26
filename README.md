@@ -26,11 +26,8 @@ KojoMapToolは、GoogleMapAPIv3を利用したオリジナル地図作成ツー�
 ```
 $ git clone https://github.com/niiyz/KojoMapTool.git kojo
 $ cd kojo
-$ npm install
-$ sudo gem install foreman
-$ foreman start
-// ブラウザでhttp://localhost:5000/ でマップ表示
-// ブラウザでhttp://localhost:5000/tool.html でマップ作成(管理画面)表示
+$ make setup
+$ make view
 ```
 
 # 1. マップ作成ツール画面
@@ -45,17 +42,17 @@ src/js/tool/tool_config.js
         /**
          * 緯度
          * @type {Number}
-         */ 
+         */
         LAT: 36.748920,
         /**
          * 経度
          * @type {Number}
-         */ 
+         */
         LNG: 137.021867,
         /**
          * ズーム
          * @type {Number}
-         */ 
+         */
         ZOOM: 17,
 ```
 
@@ -104,8 +101,8 @@ public/images/photoにアイコン用画像、public/images/photoに地点の写
  ```
 
  サンプル
- 
- ```csv 
+
+ ```csv
   ペンギン,36.74919215362724,137.0208728313446,ペンギンがいます。<br>10匹くらいいます。,pengin_icon.png,pengin1.jpg
   フラミンゴ,36.74919215362724,137.0208728313446,フラミンゴがいます。<br>20匹くらいいます。,flamingo_icon.svg,flamingo1.png
  ```
@@ -175,7 +172,7 @@ map_data.jsonをpublic/data/map_data.jsonとして設置します。
 
 ~~~
 % mkdir public/data
-% mv map_data.json public/data/map_data.json 
+% mv map_data.json public/data/map_data.json
 ~~~
 
 ## 3-2. 設定ファイル編集(map_config.js)
@@ -188,18 +185,18 @@ src/js/map/map_config.js
         /**
          * 緯度
          * @type {Number}
-         */ 
+         */
         LAT: 36.748920,
         /**
          * 経度
          * @type {Number}
-         */ 
+         */
         LNG: 137.021867,
 ~~~
 
 jsを編集したらgulpコマンドを叩いて結合圧縮したJSファイルを出力します。
 
 ```
-$ gulp 
+$ gulp
 ```
 

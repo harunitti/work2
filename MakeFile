@@ -1,0 +1,8 @@
+setup:
+	npm install
+	sudo gem install foreman
+
+view:
+	@echo "Map  -> http://localhost:5000"
+	@echo "Tool -> http://localhost:5000/tool.html"
+	foreman start
